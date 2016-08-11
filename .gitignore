@@ -1,0 +1,7 @@
+.idea
+node_modules/
+typings/
+build/
+
+config.json
+db.sqlite
