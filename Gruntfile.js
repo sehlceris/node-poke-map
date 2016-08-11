@@ -70,7 +70,7 @@ module.exports = function (grunt) {
                     // includes files within path
                     {expand: true, src: ['package.json'], dest: `${Config.BUILD_DIRECTORY}/`, filter: 'isFile'}
                 ]
-            },
+            }
         }
     });
     grunt.loadNpmTasks('grunt-ts');
