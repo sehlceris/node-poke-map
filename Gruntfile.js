@@ -55,6 +55,7 @@ module.exports = function (grunt) {
                     }
                 ], // Avoid compiling TypeScript files in node_modules
                 options: {
+                    target: 'es6',
                     failOnTypeErrors: false,
                     module: 'commonjs', // To compile TypeScript using external modules like NodeJS
                     fast: 'never', // You'll need to recompile all the files each time for NodeJS
