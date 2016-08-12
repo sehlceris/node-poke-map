@@ -2,6 +2,9 @@
 node_modules/
 typings/
 build/
+data/
+
+scratch.ts
 
 config.json
 db.sqlite

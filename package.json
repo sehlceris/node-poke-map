@@ -10,7 +10,10 @@
   "license": "You may not use this code in any way. I might release it under different terms later.",
   "dependencies": {
     "bluebird": "^3.4.1",
-    "pogobuf": "^1.5.0"
+    "fs": "0.0.2",
+    "moment": "^2.14.1",
+    "pogobuf": "^1.5.0",
+    "winston": "^2.2.0"
   },
   "devDependencies": {
     "grunt": "^1.0.1",
