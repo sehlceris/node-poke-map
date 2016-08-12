@@ -1,0 +1,315 @@
+{
+  "s2_cell_id": {
+    "low": -1073741824,
+    "high": -2133009343,
+    "unsigned": true
+  },
+  "current_timestamp_ms": {
+    "low": 2110848159,
+    "high": 342,
+    "unsigned": false
+  },
+  "forts": [
+    {
+      "id": "163bb6caceb346ffbdc1077f88492396.16",
+      "last_modified_timestamp_ms": {
+        "low": 2097074913,
+        "high": 342,
+        "unsigned": false
+      },
+      "latitude": 33.703015,
+      "longitude": -117.803816,
+      "enabled": true,
+      "type": 1,
+      "owned_by_team": 0,
+      "guard_pokemon_id": 0,
+      "guard_pokemon_cp": 0,
+      "gym_points": {
+        "low": 0,
+        "high": 0,
+        "unsigned": false
+      },
+      "is_in_battle": false,
+      "cooldown_complete_timestamp_ms": {
+        "low": 0,
+        "high": 0,
+        "unsigned": false
+      },
+      "sponsor": 0,
+      "rendering_type": 0,
+      "active_fort_modifier": {
+        "buffer": {
+          "type": "Buffer",
+          "data": []
+        },
+        "offset": 0,
+        "markedOffset": -1,
+        "limit": 0,
+        "littleEndian": false,
+        "noAssert": false
+      },
+      "lure_info": null
+    },
+    {
+      "id": "73d6dfdd191341ec82b4e364cdc86966.16",
+      "last_modified_timestamp_ms": {
+        "low": 2110818199,
+        "high": 342,
+        "unsigned": false
+      },
+      "latitude": 33.702001,
+      "longitude": -117.804532,
+      "enabled": true,
+      "type": 0,
+      "owned_by_team": 1,
+      "guard_pokemon_id": 131,
+      "guard_pokemon_cp": 0,
+      "gym_points": {
+        "low": 6175,
+        "high": 0,
+        "unsigned": false
+      },
+      "is_in_battle": true,
+      "cooldown_complete_timestamp_ms": {
+        "low": 0,
+        "high": 0,
+        "unsigned": false
+      },
+      "sponsor": 0,
+      "rendering_type": 0,
+      "active_fort_modifier": {
+        "buffer": {
+          "type": "Buffer",
+          "data": []
+        },
+        "offset": 0,
+        "markedOffset": -1,
+        "limit": 0,
+        "littleEndian": false,
+        "noAssert": false
+      },
+      "lure_info": null
+    },
+    {
+      "id": "893f816e182249058c63723e56a6b017.16",
+      "last_modified_timestamp_ms": {
+        "low": 1744478351,
+        "high": 342,
+        "unsigned": false
+      },
+      "latitude": 33.701342,
+      "longitude": -117.80255,
+      "enabled": true,
+      "type": 1,
+      "owned_by_team": 0,
+      "guard_pokemon_id": 0,
+      "guard_pokemon_cp": 0,
+      "gym_points": {
+        "low": 0,
+        "high": 0,
+        "unsigned": false
+      },
+      "is_in_battle": false,
+      "cooldown_complete_timestamp_ms": {
+        "low": 0,
+        "high": 0,
+        "unsigned": false
+      },
+      "sponsor": 0,
+      "rendering_type": 0,
+      "active_fort_modifier": {
+        "buffer": {
+          "type": "Buffer",
+          "data": []
+        },
+        "offset": 0,
+        "markedOffset": -1,
+        "limit": 0,
+        "littleEndian": false,
+        "noAssert": false
+      },
+      "lure_info": null
+    }
+  ],
+  "spawn_points": [],
+  "deleted_objects": [],
+  "is_truncated_list": false,
+  "fort_summaries": [],
+  "decimated_spawn_points": [],
+  "wild_pokemons": [
+    {
+      "encounter_id": {
+        "low": 1089084589,
+        "high": -1592900624,
+        "unsigned": true
+      },
+      "last_modified_timestamp_ms": {
+        "low": 2110848159,
+        "high": 342,
+        "unsigned": false
+      },
+      "latitude": 33.70303723355406,
+      "longitude": -117.80426105858966,
+      "spawn_point_id": "80dcdc41d13",
+      "pokemon_data": {
+        "id": {
+          "low": 0,
+          "high": 0,
+          "unsigned": true
+        },
+        "pokemon_id": 17,
+        "cp": 0,
+        "stamina": 0,
+        "stamina_max": 0,
+        "move_1": 0,
+        "move_2": 0,
+        "deployed_fort_id": "",
+        "owner_name": "",
+        "is_egg": false,
+        "egg_km_walked_target": 0,
+        "egg_km_walked_start": 0,
+        "origin": 0,
+        "height_m": 0,
+        "weight_kg": 0,
+        "individual_attack": 0,
+        "individual_defense": 0,
+        "individual_stamina": 0,
+        "cp_multiplier": 0,
+        "pokeball": 0,
+        "captured_cell_id": {
+          "low": 0,
+          "high": 0,
+          "unsigned": true
+        },
+        "battles_attacked": 0,
+        "battles_defended": 0,
+        "egg_incubator_id": "",
+        "creation_time_ms": {
+          "low": 0,
+          "high": 0,
+          "unsigned": true
+        },
+        "num_upgrades": 0,
+        "additional_cp_multiplier": 0,
+        "favorite": 0,
+        "nickname": "",
+        "from_fort": 0
+      },
+      "time_till_hidden_ms": -2110848160
+    },
+    {
+      "encounter_id": {
+        "low": -126129411,
+        "high": -2115321473,
+        "unsigned": true
+      },
+      "last_modified_timestamp_ms": {
+        "low": 2110848159,
+        "high": 342,
+        "unsigned": false
+      },
+      "latitude": 33.702965309326395,
+      "longitude": -117.8038946702803,
+      "spawn_point_id": "80dcdc41daf",
+      "pokemon_data": {
+        "id": {
+          "low": 0,
+          "high": 0,
+          "unsigned": true
+        },
+        "pokemon_id": 74,
+        "cp": 0,
+        "stamina": 0,
+        "stamina_max": 0,
+        "move_1": 0,
+        "move_2": 0,
+        "deployed_fort_id": "",
+        "owner_name": "",
+        "is_egg": false,
+        "egg_km_walked_target": 0,
+        "egg_km_walked_start": 0,
+        "origin": 0,
+        "height_m": 0,
+        "weight_kg": 0,
+        "individual_attack": 0,
+        "individual_defense": 0,
+        "individual_stamina": 0,
+        "cp_multiplier": 0,
+        "pokeball": 0,
+        "captured_cell_id": {
+          "low": 0,
+          "high": 0,
+          "unsigned": true
+        },
+        "battles_attacked": 0,
+        "battles_defended": 0,
+        "egg_incubator_id": "",
+        "creation_time_ms": {
+          "low": 0,
+          "high": 0,
+          "unsigned": true
+        },
+        "num_upgrades": 0,
+        "additional_cp_multiplier": 0,
+        "favorite": 0,
+        "nickname": "",
+        "from_fort": 0
+      },
+      "time_till_hidden_ms": 186717
+    }
+  ],
+  "catchable_pokemons": [
+    {
+      "spawn_point_id": "80dcdc41d13",
+      "encounter_id": {
+        "low": 1089084589,
+        "high": -1592900624,
+        "unsigned": true
+      },
+      "pokemon_id": 17,
+      "expiration_timestamp_ms": {
+        "low": -1,
+        "high": -1,
+        "unsigned": false
+      },
+      "latitude": 33.70303723355406,
+      "longitude": -117.80426105858966
+    },
+    {
+      "spawn_point_id": "80dcdc41daf",
+      "encounter_id": {
+        "low": -126129411,
+        "high": -2115321473,
+        "unsigned": true
+      },
+      "pokemon_id": 74,
+      "expiration_timestamp_ms": {
+        "low": 2111034876,
+        "high": 342,
+        "unsigned": false
+      },
+      "latitude": 33.702965309326395,
+      "longitude": -117.8038946702803
+    }
+  ],
+  "nearby_pokemons": [
+    {
+      "pokemon_id": 17,
+      "distance_in_meters": 0,
+      "encounter_id": {
+        "low": 1089084589,
+        "high": -1592900624,
+        "unsigned": true
+      }
+    },
+    {
+      "pokemon_id": 74,
+      "distance_in_meters": 0,
+      "encounter_id": {
+        "low": -126129411,
+        "high": -2115321473,
+        "unsigned": true
+      }
+    }
+  ]
+}

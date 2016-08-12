@@ -1,0 +1,46 @@
+{
+  "s2_cell_id": {
+    "low": -1073741824,
+    "high": -2133009343,
+    "unsigned": true
+  },
+  "current_timestamp_ms": {
+    "low": 2110848159,
+    "high": 342,
+    "unsigned": false
+  },
+  "catchable_pokemons": [
+    {
+      "spawn_point_id": "80dcdc41d13",
+      "encounter_id": {
+        "low": 1089084589,
+        "high": -1592900624,
+        "unsigned": true
+      },
+      "pokemon_id": 17,
+      "expiration_timestamp_ms": {
+        "low": -1,
+        "high": -1,
+        "unsigned": false
+      },
+      "latitude": 33.70303723355406,
+      "longitude": -117.80426105858966
+    },
+    {
+      "spawn_point_id": "80dcdc41daf",
+      "encounter_id": {
+        "low": -126129411,
+        "high": -2115321473,
+        "unsigned": true
+      },
+      "pokemon_id": 74,
+      "expiration_timestamp_ms": {
+        "low": 2111034876,
+        "high": 342,
+        "unsigned": false
+      },
+      "latitude": 33.702965309326395,
+      "longitude": -117.8038946702803
+    }
+  ]
+}

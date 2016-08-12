@@ -1,0 +1,102 @@
+{
+  "gyms": [],
+  "scanned": [],
+  "pokemons": [
+    {
+      "disappear_time": 1470991329916,
+      "encounter_id": "MTExMjQ4NTc0Nzk4NDM4NjgwNzc=",
+      "latitude": 33.70141887622408,
+      "longitude": -117.80627618121629,
+      "pokemon_id": 46,
+      "pokemon_name": "Paras",
+      "pokemon_rarity": "Uncommon",
+      "pokemon_types": [
+        {
+          "color": "#a8b820",
+          "type": "Bug"
+        },
+        {
+          "color": "#78c850",
+          "type": "Grass"
+        }
+      ],
+      "spawnpoint_id": "80dcdc406a7"
+    },
+    {
+      "disappear_time": 1470991371252,
+      "encounter_id": "MTQ3MTc2Nzk1MzgyMzg3NzI2MjE=",
+      "latitude": 33.703848524433134,
+      "longitude": -117.80059714258914,
+      "pokemon_id": 16,
+      "pokemon_name": "Pidgey",
+      "pokemon_rarity": "Common",
+      "pokemon_types": [
+        {
+          "color": "#8a8a59",
+          "type": "Normal"
+        },
+        {
+          "color": "#a890f0",
+          "type": "Flying"
+        }
+      ],
+      "spawnpoint_id": "80dcdc420c5"
+    },
+    {
+      "disappear_time": 1470991408164,
+      "encounter_id": "NDYyODgwNjc5MDQ0NDcxMDg0NQ==",
+      "latitude": 33.70097510042587,
+      "longitude": -117.80545181554369,
+      "pokemon_id": 102,
+      "pokemon_name": "Exeggcute",
+      "pokemon_rarity": "Rare",
+      "pokemon_types": [
+        {
+          "color": "#78c850",
+          "type": "Grass"
+        },
+        {
+          "color": "#f85888",
+          "type": "Psychic"
+        }
+      ],
+      "spawnpoint_id": "80dcdc40509"
+    },
+    {
+      "disappear_time": 1470991421452,
+      "encounter_id": "MTE2MDUyODc5ODg5NDA2NDM1MDE=",
+      "latitude": 33.70303723355406,
+      "longitude": -117.80426105858966,
+      "pokemon_id": 17,
+      "pokemon_name": "Pidgeotto",
+      "pokemon_rarity": "Uncommon",
+      "pokemon_types": [
+        {
+          "color": "#8a8a59",
+          "type": "Normal"
+        },
+        {
+          "color": "#a890f0",
+          "type": "Flying"
+        }
+      ],
+      "spawnpoint_id": "80dcdc41d13"
+    },
+    {
+      "disappear_time": 1470991423116,
+      "encounter_id": "ODUyNjA4Mzk1OTY3NzQ3MTIxMw==",
+      "latitude": 33.6997703142296,
+      "longitude": -117.8044442524701,
+      "pokemon_id": 19,
+      "pokemon_name": "Rattata",
+      "pokemon_rarity": "Common",
+      "pokemon_types": [
+        {
+          "color": "#8a8a59",
+          "type": "Normal"
+        }
+      ],
+      "spawnpoint_id": "80dcdc411eb"
+    }
+  ]
+}
