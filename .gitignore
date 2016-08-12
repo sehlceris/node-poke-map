@@ -3,6 +3,7 @@ node_modules/
 typings/
 build/
 data/
+src/.baseDir.ts
 
 scratch/
 scratch.ts
