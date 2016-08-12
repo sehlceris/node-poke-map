@@ -69,7 +69,8 @@ module.exports = function (grunt) {
             dist: {
                 files: [
                     // includes files within path
-                    {expand: true, src: ['package.json'], dest: `${Config.BUILD_DIRECTORY}/`, filter: 'isFile'}
+                    {expand: true, src: ['package.json'], dest: `${Config.BUILD_DIRECTORY}/`, filter: 'isFile'},
+                    {expand: true, src: ['config.json'], dest: `${Config.BUILD_DIRECTORY}/`, filter: 'isFile'}
                 ]
             }
         }

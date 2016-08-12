@@ -1,4 +1,7 @@
-import fs = require('fs');
+let fs = require('fs');
+let log = require('winston');
+let bluebird = require('bluebird');
+
 import Constants from '../Constants';
 
 let pokedex = JSON.parse(fs.readFileSync(Constants.POKEDEX_PATH, 'utf8'));

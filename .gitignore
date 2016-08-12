@@ -4,7 +4,9 @@ typings/
 build/
 data/
 
+scratch/
 scratch.ts
 
 config.json
+accounts.json
 db.sqlite

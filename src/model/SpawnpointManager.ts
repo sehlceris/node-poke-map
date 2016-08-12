@@ -3,16 +3,11 @@ let log = require('winston');
 let bluebird = require('bluebird');
 
 import Constants from '../Constants';
-import Worker from 'Worker';
+import Spawnpoint from 'Spawnpoint';
 
-export default class Spawnpoint {
-    lat:number;
-    long:number;
-    cell:number;
-    id:number;
-    time:number;
-
-    workers:Array<Worker>
+export default class SpawnpointManager {
+    
+    spawnPoints:Array<Spawnpoint>;
 
     constructor(o) {
         this.lat = o.lat;
@@ -20,12 +15,6 @@ export default class Spawnpoint {
         this.cell = o.cell;
         this.id = o.sid;
         this.time = o.time;
-
-        this.workers = [];
-    }
-
-    assignWorker(worker:Worker) {
-        this.workers.push(worker);
     }
 
 }
