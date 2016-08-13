@@ -86,12 +86,15 @@ export class Clairvoyance {
 
             let timeRunning = Math.round((new Date() - this.initTime) / 1000) / 60;
 
+            let requestQueueLength = this.requestQueue.queue.length;
+
             log.info(`
             ********************************
             Benchmarks
             
             workers used: ${workersUsed}/${this.workerPool.workers.length}
             time running: ${timeRunning} minutes
+            request queue: ${requestQueueLength} requests
             ********************************
             `);
 
@@ -108,13 +111,13 @@ export class Clairvoyance {
 
         worker.reserve();
         worker.moveTo(spawnpoint.lat, spawnpoint.long);
-        log.info(`spawnpoint ${spawnpoint.id} has spawned, adding scan request using worker ${worker.id}`);
+        log.info(`spawnpoint ${spawnpoint.id} spawned, using worker ${worker.id}`);
 
         let request = this.requestQueue.addWorkerScanRequest(worker);
         request.completedPromise
             .then((result) => {
                 worker.free();
-                log.info(`request on worker ${worker.id} completed`);
+                log.debug(`request on worker ${worker.id} completed`);
                 //TODO: Handle result
             })
             .catch((err) => {

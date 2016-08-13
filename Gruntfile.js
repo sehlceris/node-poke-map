@@ -9,7 +9,7 @@ module.exports = function (grunt) {
         pkg: grunt.file.readJSON('package.json'),
         nodemon: {
             dev: {
-                script: `${Config.BUILD_DIRECTORY}/JoltMap.js`
+                script: `${Config.BUILD_DIRECTORY}/Clairvoyance.js`
             },
             options: {
                 ignore: ['node_modules/**', 'Gruntfile.js', 'test']
