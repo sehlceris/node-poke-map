@@ -7,8 +7,16 @@ let stops;
 let geoStops;
 let pokemon;
 let spawns;
+let workers;
 
 export default class Data {
+
+    static getWorkers() {
+        if (!workers) {
+            workers = JSON.parse((fs.readFileSync(Constants.WORKERS_JSON_PATH)));
+        }
+        return workers;
+    }
 
     static getGyms() {
         if (!gyms) {

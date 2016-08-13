@@ -12,27 +12,15 @@
   "statisticLoggingInterval": 30000,
 
   "enableGreedyWorkerAllocation": false,
+  "enableParallelRequests": false,
   "randomWorkerDelayFudgeFactor": 1000,
   "randomGlobalScanDelayFudgeFactor": 300,
   "spawnScanDelay": 1000,
 
   "simulate": true,
   "simulationTimestep": 50,
+  "simulationRequestDuration": 500,
   "minutesSimulated": 300,
 
-  "googleMapsApiKey": "AHAAAAAA",
-  "workerLogins": [
-    {
-      "username": "ash",
-      "password": "pikachu"
-    },
-    {
-      "username": "misty",
-      "password": "starmie"
-    },
-    {
-      "username": "brock",
-      "password": "onix"
-    }
-  ]
+  "googleMapsApiKey": "AHAAAAAA"
 }

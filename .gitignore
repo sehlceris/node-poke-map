@@ -11,5 +11,8 @@ scratch.ts
 config.json
 config.production.json
 config.dev.json
+workers.json
+workers.dev.json
+workers.production.json
 accounts.json
 db.sqlite

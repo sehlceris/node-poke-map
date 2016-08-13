@@ -71,7 +71,7 @@ export class Clairvoyance {
             return;
         }
 
-        let workerLogins = Config.workerLogins;
+        let workerLogins = Data.getWorkers();
         let workers = workerLogins.map((workerLogin) => {
             return new Worker(workerLogin);
         });
@@ -88,12 +88,14 @@ export class Clairvoyance {
         }
 
         setInterval(() => {
+            let timeRunning = Math.round(((Utils.timestepTransformUp(new Date() - this.initTime) / 1000) / 60) * 10) / 10;
 
             let workersUsed = this.workerPool.workers.filter((worker) => {
                 return worker.hasBeenUsedAtLeastOnceDuringProgramExecution();
             }).length;
+            let workerAllocationFailures = this.workerPool.workerAllocationFailures;
+            let workerAllocationFailuresPerMinute = (Math.round((workerAllocationFailures / timeRunning) * 100) / 100);
 
-            let timeRunning = Math.round(((Utils.timestepTransformUp(new Date() - this.initTime) / 1000) / 60) * 10) / 10;
             let requestQueueLength = this.requestQueue.queue.length;
             let totalRequestsProcessed = this.requestQueue.totalRequestsProcessed;
             let averageRequestsProcessedPerMinute = (Math.round((totalRequestsProcessed / timeRunning) * 100) / 100);
@@ -102,11 +104,15 @@ export class Clairvoyance {
 
             log.info(`
             ********************************
-            Stats ${Config.simulate ? 'WARNING: SIMULATION ONLY MODE WITH TIMESTEP ' + Config.simulationTimestep : ''}
+            Stats ${Config.simulate ? 'WARNING: SIMULATION ONLY MODE WITH TIMESTEP ' + Config.simulationTimestep + ' AND REQUEST DURATION ' + Config.simulationRequestDuration : ''}
             
-            workers used: ${workersUsed}/${this.workerPool.workers.length}
             time running: ${timeRunning} minutes
-            request queue: ${requestQueueLength} requests
+            
+            workers allocated: ${workersUsed}/${this.workerPool.workers.length}
+            worker allocation failures: ${workerAllocationFailures}
+            average worker allocation failures per minute: ${workerAllocationFailuresPerMinute}
+            
+            request queue: ${requestQueueLength}
             
             total requests processed: ${totalRequestsProcessed}
             average requests processed per minute: ${averageRequestsProcessedPerMinute}
@@ -128,7 +134,7 @@ export class Clairvoyance {
         let worker = this.workerPool.getWorkerThatCanWalkTo(spawnpoint.lat, spawnpoint.long);
 
         if (!worker) {
-            log.error(`no worker available to handle spawnpoint ${spawnpoint.id}, skipping this spawn`);
+            log.warn(`no worker available to handle spawnpoint ${spawnpoint.id}, skipping this spawn`);
             return;
         }
 

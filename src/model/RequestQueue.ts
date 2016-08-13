@@ -81,10 +81,19 @@ export default class ScanRequestQueue {
                 }, Utils.timestepTransformDown(totalDelayTime));
             })
             .then(() => {
-                return this.executeScanRequest(request);
+                if (Config.enableParallelRequests === true) {
+                    this.executeScanRequest(request);
+                    return Promise.resolve();
+                }
+                else {
+                    return this.executeScanRequest(request);
+                }
             })
             .then(() => {
                 this.backOffFactor--;
+                if (this.backOffFactor < 0) {
+                    this.backOffFactor = 0;
+                }
                 let nextRequest = this.queue.pop();
                 if (nextRequest) {
                     return this.process(nextRequest);
@@ -119,7 +128,7 @@ export default class ScanRequestQueue {
                     let result = `fake completion on worker id ${worker.id}`;
                     request.setCompleted(result);
                     resolve(result);
-                }, Utils.timestepTransformDown(1000));
+                }, Utils.timestepTransformDown(Config.simulationRequestDuration));
             }
             else {
                 //TODO
@@ -127,7 +136,7 @@ export default class ScanRequestQueue {
                     let result = `fake completion on worker id ${worker.id}`;
                     request.setCompleted(result);
                     resolve(result);
-                }, Utils.timestepTransformDown(1000));
+                }, Utils.timestepTransformDown(Config.simulationRequestDuration));
             }
 
         });

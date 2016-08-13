@@ -11,10 +11,12 @@ export default class WorkerPool {
 
     workers:Array<Worker>;
     currentWorkerIndex:number;
+    workerAllocationFailures:number;
 
     constructor(workers:Array<Worker>) {
         this.workers = workers;
         this.currentWorkerIndex = 0;
+        this.workerAllocationFailures = 0;
     }
 
     //Get a worker that can walk to the specified coordinates. Returns null if no worker is available.
@@ -54,6 +56,7 @@ export default class WorkerPool {
         }
 
         //If we get here, no worker can walk to those coordinates.
+        this.workerAllocationFailures++;
         return null;
     }
 

@@ -1,5 +1,6 @@
 export default class Constants {
     static CONFIG_JSON_PATH:string = 'config.json';
+    static WORKERS_JSON_PATH:string = 'workers.json';
     static POKEDEX_JSON_PATH:string = 'data/pokedex.json';
     static GYMS_JSON_PATH:string = 'data/gyms.json';
     static GEO_GYMS_JSON_PATH:string = 'data/geo_gyms.json';
