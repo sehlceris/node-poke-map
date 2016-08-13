@@ -5,7 +5,7 @@ import Constants from '../Constants';
 import Config from '../Config';
 import Utils from '../Utils';
 
-const log = Utils.getLogger('RequestQueue');
+const log:any = Utils.getLogger('RequestQueue');
 
 export class ScanRequest {
 
