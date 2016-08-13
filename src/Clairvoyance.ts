@@ -1,4 +1,5 @@
 let pogobuf = require('pogobuf');
+let geolib = require('geolib');
 import bluebird = require('bluebird');
 
 import Pokemon from './model/Pokemon';
@@ -62,7 +63,20 @@ export class Clairvoyance {
 
         let spawns = Data.getSpawns();
 
-        this.spawnpoints = spawns.map((spawn) => {
+        log.info(`Scan center: ${Config.scanCenterLat}, ${Config.scanCenterLong}`);
+
+        let filteredSpawnPoints = spawns.filter((spawn) => {
+            let result = geolib.isPointInCircle({
+                latitude: Config.scanCenterLat,
+                longitude: Config.scanCenterLong
+            }, {
+                latitude: spawn.lat,
+                longitude: spawn.lng,
+            }, Config.scanRadiusMeters);
+            return result;
+        });
+
+        this.spawnpoints = filteredSpawnPoints.map((spawn) => {
             return new Spawnpoint(spawn);
         });
 
@@ -130,7 +144,8 @@ export class Clairvoyance {
             total requests dropped: ${totalRequestsDropped}
             average requests dropped per minute: ${averageRequestsDroppedPerMinuteStr}
             
-            spawns: ${this.spawnCount}
+            spawnpoint count: ${this.spawnpoints.length}
+            total spawns: ${this.spawnCount}
             average spawns per minute: ${averageSpawnsPerMinuteStr}
             spawns processed: ${this.spawnsProcessed}
             spawns scanned successfully: ${this.spawnsScannedSuccessfully}

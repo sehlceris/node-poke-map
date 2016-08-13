@@ -8,7 +8,8 @@ export interface Config {
     spawnScanDelay:number; // delay between a spawn occurring and the scanner trying to pick it up
     workerMaximumMovementSpeedMetersPerSecond:number; //maximum speed a worker may move in order to reach a spawn
     maximumRequestQueueLength:number; // maximum number of requests that can be queued before dropping
-    scanCenter:string; // lat/long string describing scan center
+    scanCenterLat:number; // lat number describing scan center
+    scanCenterLong:number; // long number describing scan center
     scanRadiusMeters:number; // radius of scan. spawnpoints outside this radius will not be scanned
     googleMapsApiKey:string; // your google maps API key
 
