@@ -35,6 +35,10 @@ export default class Worker {
         this.password = params.password;
     }
 
+    hasBeenUsedAtLeastOnceDuringProgramExecution():boolean {
+        return (!!this.lastTimeReserved || !!this.lastTimeFreed || !!this.lastTimeMoved);
+    }
+
     getTimeSinceLastFree():number {
         if (!this.lastTimeFreed) {
             return Infinity;
@@ -79,13 +83,13 @@ export default class Worker {
         let timeSeconds = Math.round(timeDiff / 1000);
         let roundedSpeed = Math.round((speed * 10) / 10);
 
-        log.info(`worker ${this.username} would move from ${this.currentLat}, ${this.currentLong} to ${lat}, ${long}, a distance of ${meters}m over ${timeSeconds}s, a speed of ${roundedSpeed} m/s`);
+        log.info(`worker ${this.id} would move from ${this.currentLat}, ${this.currentLong} to ${lat}, ${long}, a distance of ${meters}m over ${timeSeconds}s, a speed of ${roundedSpeed} m/s`);
         if (speed <= Config.workerMaximumMovementSpeedMetersPerSecond) {
-            log.info(`worker ${this.username} can move to ${lat}, ${long} because ${roundedSpeed}m/s <= ${Config.workerMaximumMovementSpeedMetersPerSecond}m/s`);
+            log.info(`worker ${this.id} can move to ${lat}, ${long} because ${roundedSpeed}m/s <= ${Config.workerMaximumMovementSpeedMetersPerSecond}m/s`);
             return true;
         }
         else {
-            log.info(`worker ${this.username} is unable to move to ${lat}, ${long} because it would move at ${roundedSpeed} vs the maximum of ${Config.workerMaximumMovementSpeedMetersPerSecond}`);
+            log.info(`worker ${this.id} is unable to move to ${lat}, ${long} because it would move at ${roundedSpeed} vs the maximum of ${Config.workerMaximumMovementSpeedMetersPerSecond}`);
             return false;
         }
     }

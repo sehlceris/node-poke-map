@@ -78,11 +78,16 @@ export default class ScanRequestQueue {
     queue:Array<ScanRequest>;
     lastRequestTime:Date;
     processingPromise:Promise;
+    backOffFactor:number;
 
     constructor() {
         this.queue = [];
         this.lastRequestTime = new Date();
         this.isProcessing = false;
+    }
+
+    backOff() {
+        this.backOffFactor++;
     }
 
     addWorkerScanRequest(worker):ScanRequest {
@@ -125,6 +130,7 @@ export default class ScanRequestQueue {
                 return this.executeScanRequest(request);
             })
             .then(() => {
+                this.backOffFactor--;
                 let nextRequest = this.queue.pop();
                 if (nextRequest) {
                     return this.process(nextRequest);
@@ -134,6 +140,7 @@ export default class ScanRequestQueue {
                 }
             })
             .catch((err) => {
+                this.backOff();
                 log.warn(`error while handling scan request: ${err}`);
                 let nextRequest = this.queue.pop();
                 if (nextRequest) {

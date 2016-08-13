@@ -58,7 +58,26 @@ export class JoltMap {
     }
 
     handleSpawn(spawnpoint:Spawnpoint) {
-        log.info(`Spawnpoint ${spawnpoint.id} has spawned, adding scan request`);
+        log.info(`spawnpoint ${spawnpoint.id} has spawned, adding scan request`);
+        let worker = this.workerPool.getWorkerThatCanWalkTo(spawnpoint.lat, spawnpoint.long);
 
+        if (!worker) {
+            log.error(`no worker available to handle spawnpoint ${spawnpoint.id}, skipping this spawn`);
+            return;
+        }
+
+        worker.reserve()
+
+        let request = this.requestQueue.addWorkerScanRequest(worker);
+        request.completedPromise
+            .then((result) => {
+                worker.free();
+                log.info(`request completed. result: ${JSON.stringify(result)}`);
+                //TODO: Handle result
+            })
+            .catch((err) => {
+                worker.free();
+                log.error(`failed to process scan for worker ${worker.id}: `);
+            });
     }
 }
