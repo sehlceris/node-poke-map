@@ -8,6 +8,7 @@ import WorkerPool from './model/WorkerPool';
 import RequestQueue from './model/RequestQueue';
 import Utils from './Utils';
 import Config from './Config';
+import Constants from './Constants';
 import Data from './Data';
 
 import Utils from 'Utils';
@@ -22,6 +23,8 @@ export class Clairvoyance {
     requestQueue:RequestQueue;
     workerPool:WorkerPool;
 
+    initTime:Date;
+
     static getInstance():Clairvoyance {
         if (!instance) {
             instance = new Clairvoyance();
@@ -30,6 +33,9 @@ export class Clairvoyance {
     }
 
     constructor() {
+
+        this.initBenchmarking();
+
         this.initSpawnPoints();
         this.initWorkers();
         this.requestQueue = new RequestQueue();
@@ -66,6 +72,30 @@ export class Clairvoyance {
         });
 
         this.workerPool = new WorkerPool(workers);
+    }
+
+    initBenchmarking():void {
+
+        this.initTime = new Date();
+
+        setInterval(() => {
+
+            let workersUsed = this.workerPool.workers.filter((worker) => {
+                return worker.hasBeenUsedAtLeastOnceDuringProgramExecution();
+            }).length;
+
+            let timeRunning = Math.round((new Date() - this.initTime) / 1000);
+
+            log.info(`
+            ********************************
+            Benchmarks
+            
+            workers used: ${workersUsed}/${this.workerPool.workers.length}
+            time running: ${timeRunning}
+            ********************************
+            `);
+
+        }, Constants.MINUTE);
     }
 
     handleSpawn(spawnpoint:Spawnpoint) {
