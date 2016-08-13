@@ -22,6 +22,9 @@ export class Clairvoyance {
     spawnpoints:Array<Spawnpoint>;
     requestQueue:RequestQueue;
     workerPool:WorkerPool;
+    spawnCount:number;
+    spawnsProcessed:number;
+    spawnsScannedSuccessfully:number;
 
     initTime:Date;
 
@@ -36,6 +39,9 @@ export class Clairvoyance {
 
         this.initStatisticLogging();
 
+        this.spawnCount = 0;
+        this.spawnsProcessed = 0;
+        this.spawnsScannedSuccessfully = 0;
         this.initSpawnPoints();
         this.initWorkers();
         this.requestQueue = new RequestQueue();
@@ -102,6 +108,9 @@ export class Clairvoyance {
             let totalRequestsDropped = this.requestQueue.totalRequestsDropped;
             let averageRequestsDroppedPerMinute = (Math.round((totalRequestsDropped / timeRunning) * 100) / 100);
 
+            let spawnScanPercentage = ((this.spawnsScannedSuccessfully / this.spawnsProcessed) * 100).toFixed(1);
+            let spawnMissedPercentage = (100 - spawnScanPercentage).toFixed(1);
+
             log.info(`
             ********************************
             Stats ${Config.simulate ? 'WARNING: SIMULATION ONLY MODE WITH TIMESTEP ' + Config.simulationTimestep + ' AND REQUEST DURATION ' + Config.simulationRequestDuration : ''}
@@ -119,6 +128,11 @@ export class Clairvoyance {
             
             total requests dropped: ${totalRequestsDropped}
             average requests dropped per minute: ${averageRequestsDroppedPerMinute}
+            
+            spawns: ${this.spawnCount}
+            spawns processed: ${this.spawnsProcessed}
+            spawns scanned successfully: ${this.spawnsScannedSuccessfully}
+            percentage of spawns scanned: ${spawnScanPercentage}% (${spawnMissedPercentage}% missed)
             ********************************
             `);
 
@@ -131,10 +145,13 @@ export class Clairvoyance {
     }
 
     handleSpawn(spawnpoint:Spawnpoint) {
+        this.spawnCount++;
+
         let worker = this.workerPool.getWorkerThatCanWalkTo(spawnpoint.lat, spawnpoint.long);
 
         if (!worker) {
             log.warn(`no worker available to handle spawnpoint ${spawnpoint.id}, skipping this spawn`);
+            this.spawnsProcessed++;
             return;
         }
 
@@ -148,13 +165,16 @@ export class Clairvoyance {
                 .then((result) => {
                     log.verbose(`request on worker ${worker.id} processed`);
                     return request.completedPromise.then((result) => {
-                        log.verbose(`request on worker ${worker.id} completed: ${result}`);
                         worker.free();
+                        log.verbose(`request on worker ${worker.id} completed: ${result}`);
+                        this.spawnsProcessed++;
+                        this.spawnsScannedSuccessfully++;
                     })
                 })
                 .catch((err) => {
                     worker.free();
                     log.warn(`failed to process scan for worker ${worker.id} on spawnpoint ${spawnpoint.id}: ${err}`);
+                    this.spawnsProcessed++;
                 });
         }, Utils.timestepTransformDown(Config.spawnScanDelay));
     }
