@@ -117,7 +117,7 @@ export default class ScanRequestQueue {
 
     process(request) {
 
-        log.info(`processing new request on worker ${request.worker.id}`);
+        log.debug(`processing new request on worker ${request.worker.id}`);
 
         return new Promise(
             (resolve, reject) => {

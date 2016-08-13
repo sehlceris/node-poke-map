@@ -30,7 +30,7 @@ export default class Spawnpoint {
 
     startSpawnTimer():void {
 
-        log.debug(`spawn ${this.id} timer starting...`);
+        let randomTimeout = Utils.getRandomInt(0, Constants.HOUR);
 
         this.stopSpawnTimer();
         this.timerStartTimeout = setTimeout(() => {
@@ -38,11 +38,12 @@ export default class Spawnpoint {
             //Timer to trigger spawn handler
             this.timerInterval = setInterval(() => {
                 this.fireSpawn();
-            }, 3000);
+            }, Constants.HOUR);
 
             //Fire spawn handler for the first time
             this.fireSpawn();
-        }, 2000);
+        }, randomTimeout);
+        //TODO: Fix this random! It should be obviously set to whatever the spawn is
     }
 
     stopSpawnTimer():void {

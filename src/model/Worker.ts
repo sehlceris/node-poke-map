@@ -30,7 +30,6 @@ export default class Worker {
         this.isFreeBool = true;
         this.id = nextUsableId;
         nextUsableId++;
-        log.info(`worker id ${this.id} created`);
 
         this.username = params.username;
         this.password = params.password;
@@ -59,6 +58,7 @@ export default class Worker {
         this.currentLat = lat;
         this.currentLong = long;
         this.lastTimeMoved = new Date();
+        log.debug(`worker ${this.id} moved to ${lat}, ${long}`);
     }
 
     canMoveTo(lat, long):Boolean {
@@ -84,13 +84,13 @@ export default class Worker {
         let timeSeconds = Math.round(timeDiff / 1000);
         let roundedSpeed = Math.round((speed * 10) / 10);
 
-        log.info(`worker ${this.id} would move from ${this.currentLat}, ${this.currentLong} to ${lat}, ${long}, a distance of ${meters}m over ${timeSeconds}s, a speed of ${roundedSpeed} m/s`);
+        log.debug(`worker ${this.id} would move from ${this.currentLat}, ${this.currentLong} to ${lat}, ${long}, a distance of ${meters}m over ${timeSeconds}s, a speed of ${roundedSpeed} m/s`);
         if (speed <= Config.workerMaximumMovementSpeedMetersPerSecond) {
-            log.info(`worker ${this.id} can move to ${lat}, ${long} because ${roundedSpeed}m/s <= ${Config.workerMaximumMovementSpeedMetersPerSecond}m/s`);
+            log.debug(`worker ${this.id} can move to ${lat}, ${long} because ${roundedSpeed}m/s <= ${Config.workerMaximumMovementSpeedMetersPerSecond}m/s`);
             return true;
         }
         else {
-            log.info(`worker ${this.id} is unable to move to ${lat}, ${long} because it would move at ${roundedSpeed} vs the maximum of ${Config.workerMaximumMovementSpeedMetersPerSecond}`);
+            log.debug(`worker ${this.id} is unable to move to ${lat}, ${long} because it would move at ${roundedSpeed} vs the maximum of ${Config.workerMaximumMovementSpeedMetersPerSecond}`);
             return false;
         }
     }
@@ -98,11 +98,13 @@ export default class Worker {
     reserve():void {
         this.isFreeBool = false;
         this.lastTimeReserved = new Date();
+        log.debug(`worker ${this.id} reserved`);
     }
 
     free():void {
         this.isFreeBool = true;
         this.lastTimeFreed = new Date();
+        log.debug(`worker ${this.id} freed`);
     }
 
     isFree():boolean {

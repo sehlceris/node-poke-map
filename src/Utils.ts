@@ -20,4 +20,12 @@ export default class Utils {
         });
         return logger;
     }
+
+    static getRandomFloat(min:Number, max:Number) {
+        return Math.random() * (max - min) + min;
+    }
+
+    static getRandomInt(min:Number, max:Number):Number {
+        return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
 }
