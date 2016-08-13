@@ -38,11 +38,11 @@ export default class Spawnpoint {
             //Timer to trigger spawn handler
             this.timerInterval = setInterval(() => {
                 this.fireSpawn();
-            }, 10000);
+            }, 3000);
 
             //Fire spawn handler for the first time
             this.fireSpawn();
-        }, 9999);
+        }, 2000);
     }
 
     stopSpawnTimer():void {

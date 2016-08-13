@@ -2,6 +2,7 @@ import bluebird = require('bluebird');
 
 import Worker from './Worker';
 import Constants from '../Constants';
+import Config from '../Config';
 import Utils from '../Utils';
 
 const log = Utils.getLogger('WorkerPool');
@@ -20,21 +21,38 @@ export default class WorkerPool {
     getWorkerThatCanWalkTo(lat, long) {
 
         let i;
+        let lastWorkerIndex;
+        let searchLoop;
+
+        if (true === Config.enableGreedyWorkerAllocation) {
+            i = this.currentWorkerIndex;
+            lastWorkerIndex = this.currentWorkerIndex;
+            searchLoop = true;
+        }
+        else {
+            i = 0;
+            lastWorkerIndex = this.workers.length - 1;
+            searchLoop = false;
+        }
 
         //Search to end of array
-        for (i = this.currentWorkerIndex; i < this.workers.length; i++) {
-            if (this.workers[i].hasSatisfiedScanDelay() && this.workers[i].canWalkTo(lat, long)) {
+        for (i = i; i < this.workers.length; i++) {
+            if (this.workers[i].isFree() && this.workers[i].hasSatisfiedScanDelay() && this.workers[i].canMoveTo(lat, long)) {
                 this.currentWorkerIndex = i;
                 return this.workers[i];
             }
         }
 
-        //If we get here, no free worker was found, reset index to 0 and begin search again
-        let lastWorkerIndex = this.currentWorkerIndex;
-        for (i = 0; i < lastWorkerIndex; i++) {
-            if (this.workers[i].hasSatisfiedScanDelay() && this.workers[i].canWalkTo(lat, long)) {
-                this.currentWorkerIndex = i;
-                return this.workers[i];
+        if (true === searchLoop) {
+            //If we get here, no free worker was found, reset index to 0 and begin search again
+            for (i = i; i = 0; i < lastWorkerIndex;
+            i++
+        )
+            {
+                if (this.workers[i].isFree() && this.workers[i].hasSatisfiedScanDelay() && this.workers[i].canMoveTo(lat, long)) {
+                    this.currentWorkerIndex = i;
+                    return this.workers[i];
+                }
             }
         }
 

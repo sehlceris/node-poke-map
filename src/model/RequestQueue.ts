@@ -110,14 +110,14 @@ export default class ScanRequestQueue {
     }
 
     startProcessing():Promise {
-        if (!this.isProcessing) {
-            this.isProcessing = true;
-            this.processingPromise = this.process(this.queue.pop());
-        }
+        this.isProcessing = true;
+        this.processingPromise = this.process(this.queue.pop());
         return this.processingPromise;
     }
 
     process(request) {
+
+        log.info(`processing new request on worker ${request.worker.id}`);
 
         return new Promise(
             (resolve, reject) => {
@@ -136,7 +136,8 @@ export default class ScanRequestQueue {
                     return this.process(nextRequest);
                 }
                 else {
-                    return 'all scan requests processed';
+                    this.isProcessing = false;
+                    return 'scan queue emptied';
                 }
             })
             .catch((err) => {
@@ -160,8 +161,9 @@ export default class ScanRequestQueue {
 
             //TODO
             setTimeout(() => {
-                request.setCompleted(`fake completion on worker id ${worker.id}`);
-                resolve();
+                let msg = `fake completion on worker id ${worker.id}`;
+                request.setCompleted(msg);
+                resolve(msg);
             }, 1000);
         });
     }

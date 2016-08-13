@@ -19,7 +19,7 @@ export default class Worker {
     id:number;
     username:String;
     password:String;
-    isFree:Boolean;
+    isFreeBool:Boolean;
     currentLat:String;
     currentLong:String;
     lastTimeMoved:Date;
@@ -27,9 +27,10 @@ export default class Worker {
     lastTimeReserved:Date;
 
     constructor(params:LoginData) {
-        this.isFree = true;
+        this.isFreeBool = true;
         this.id = nextUsableId;
         nextUsableId++;
+        log.info(`worker id ${this.id} created`);
 
         this.username = params.username;
         this.password = params.password;
@@ -49,18 +50,18 @@ export default class Worker {
     }
 
     hasSatisfiedScanDelay():boolean {
-        let satisfied = this.getTimeSinceLastFree() > Config.workerScanDelayMs;
-        log.info(`worker ${this.id} has ${satisfied ? "" : "not "} satisfied scan delay (has waited ${this.getTimeSinceLastFree()} out of ${Config.workerScanDelayMs})`);
+        let satisfied = (this.getTimeSinceLastFree() > Config.workerScanDelayMs);
+        log.debug(`worker ${this.id} has${satisfied ? "" : " not"} satisfied scan delay (has waited ${this.getTimeSinceLastFree()} out of ${Config.workerScanDelayMs})`);
         return satisfied;
     }
 
-    walkTo(lat, long):void {
+    moveTo(lat, long):void {
         this.currentLat = lat;
         this.currentLong = long;
         this.lastTimeMoved = new Date();
     }
 
-    canWalkTo(lat, long):Boolean {
+    canMoveTo(lat, long):Boolean {
         if (!this.lastTimeMoved) {
             return true;
         }
@@ -95,16 +96,16 @@ export default class Worker {
     }
 
     reserve():void {
-        this.isFree = false;
+        this.isFreeBool = false;
         this.lastTimeReserved = new Date();
     }
 
     free():void {
-        this.isFree = true;
+        this.isFreeBool = true;
         this.lastTimeFreed = new Date();
     }
 
-    isFree():void {
-        return this.isFree;
+    isFree():boolean {
+        return this.isFreeBool;
     }
 }

@@ -69,7 +69,7 @@ export class Clairvoyance {
     }
 
     handleSpawn(spawnpoint:Spawnpoint) {
-        log.info(`spawnpoint ${spawnpoint.id} has spawned, adding scan request`);
+        // log.info(`spawnpoint ${spawnpoint.id} has spawned, adding scan request`);
         let worker = this.workerPool.getWorkerThatCanWalkTo(spawnpoint.lat, spawnpoint.long);
 
         if (!worker) {
@@ -77,13 +77,15 @@ export class Clairvoyance {
             return;
         }
 
-        worker.reserve()
+        log.info(`reserving worker ${worker.id}`);
+        worker.reserve();
+        worker.moveTo(spawnpoint.lat, spawnpoint.long);
 
         let request = this.requestQueue.addWorkerScanRequest(worker);
         request.completedPromise
             .then((result) => {
                 worker.free();
-                log.info(`request completed. result: ${JSON.stringify(result)}`);
+                log.info(`request on worker ${worker.id} completed`);
                 //TODO: Handle result
             })
             .catch((err) => {
