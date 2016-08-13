@@ -25,6 +25,7 @@ export default class Worker {
     lastTimeMoved:Date;
     lastTimeFreed:Date;
     lastTimeReserved:Date;
+    currentRandomExtraDelay:Number;
 
     constructor(params:LoginData) {
         this.isFreeBool = true;
@@ -33,6 +34,8 @@ export default class Worker {
 
         this.username = params.username;
         this.password = params.password;
+
+        this.currentRandomExtraDelay = Utils.getRandomInt(0, Config.randomWorkerDelayFudgeFactor);
     }
 
     hasBeenUsedAtLeastOnceDuringProgramExecution():boolean {
@@ -49,8 +52,8 @@ export default class Worker {
     }
 
     hasSatisfiedScanDelay():boolean {
-        let satisfied = (this.getTimeSinceLastFree() > Config.workerScanDelayMs);
-        log.debug(`worker ${this.id} has${satisfied ? "" : " not"} satisfied scan delay (has waited ${this.getTimeSinceLastFree()} out of ${Config.workerScanDelayMs})`);
+        let satisfied = ((this.getTimeSinceLastFree() + this.currentRandomExtraDelay) > Config.workerScanDelayMs);
+        log.debug(`worker ${this.id} has${satisfied ? "" : " not"} satisfied scan delay (has waited ${(this.getTimeSinceLastFree() + this.currentRandomExtraDelay)} out of ${Config.workerScanDelayMs + this.currentRandomExtraDelay})`);
         return satisfied;
     }
 
@@ -104,6 +107,7 @@ export default class Worker {
     free():void {
         this.isFreeBool = true;
         this.lastTimeFreed = new Date();
+        this.currentRandomExtraDelay = Utils.getRandomInt(0, Config.randomWorkerDelayFudgeFactor);
         log.debug(`worker ${this.id} freed`);
     }
 

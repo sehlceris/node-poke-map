@@ -85,8 +85,11 @@ export class Clairvoyance {
             }).length;
 
             let timeRunning = Math.round((new Date() - this.initTime) / 1000) / 60;
-
             let requestQueueLength = this.requestQueue.queue.length;
+            let totalRequestsProcessed = this.requestQueue.totalRequestsProcessed;
+            let averageRequestsProcessedPerMinute = (Math.round((totalRequestsProcessed / timeRunning) * 100) / 100);
+            let totalRequestsDropped = this.requestQueue.totalRequestsDropped;
+            let averageRequestsDroppedPerMinute = (Math.round((totalRequestsDropped / timeRunning) * 100) / 100);
 
             log.info(`
             ********************************
@@ -95,6 +98,10 @@ export class Clairvoyance {
             workers used: ${workersUsed}/${this.workerPool.workers.length}
             time running: ${timeRunning} minutes
             request queue: ${requestQueueLength} requests
+            total requests processed: ${totalRequestsProcessed}
+            average requests processed per minute: ${averageRequestsProcessedPerMinute}
+            total requests dropped: ${averageRequestsProcessedPerMinute}
+            average requests dropped per minute: ${averageRequestsDroppedPerMinute}
             ********************************
             `);
 
@@ -111,19 +118,23 @@ export class Clairvoyance {
 
         worker.reserve();
         worker.moveTo(spawnpoint.lat, spawnpoint.long);
-        log.info(`spawnpoint ${spawnpoint.id} spawned, using worker ${worker.id}`);
+        log.verbose(`spawnpoint ${spawnpoint.id} spawned, sending worker ${worker.id}`);
 
-        let request = this.requestQueue.addWorkerScanRequest(worker);
-        request.completedPromise
-            .then((result) => {
-                worker.free();
-                log.debug(`request on worker ${worker.id} completed`);
-                //TODO: Handle result
-            })
-            .catch((err) => {
-                worker.free();
-                log.error(`failed to process scan for worker ${worker.id}: `);
-            });
+        setTimeout(() => {
+            let request = this.requestQueue.addWorkerScanRequest(worker, spawnpoint);
+            request.processedPromise
+                .then((result) => {
+                    log.verbose(`request on worker ${worker.id} processed`);
+                    return request.completedPromise.then((result) => {
+                        log.verbose(`request on worker ${worker.id} completed: ${result}`);
+                        worker.free();
+                    })
+                })
+                .catch((err) => {
+                    worker.free();
+                    log.error(`failed to process scan for worker ${worker.id} on spawnpoint ${spawnpoint.id}: ${err}`);
+                });
+        }, Config.spawnScanDelay);
     }
 }
 
