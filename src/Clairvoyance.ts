@@ -138,8 +138,8 @@ export class Clairvoyance {
             ********************************
             `);
 
-            if (timeRunning > Config.minutesSimulated) {
-                log.info(`simulation complete`)
+            if (Config.simulate && timeRunning > Config.minutesSimulated) {
+                log.info(`simulation complete, exiting application`);
                 process.exit(0);
             }
 
