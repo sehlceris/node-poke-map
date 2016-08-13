@@ -40,6 +40,8 @@ export class Clairvoyance {
         this.initWorkers();
         this.requestQueue = new RequestQueue();
 
+        log.info(`**********************************************`);
+        log.info(`CLAIRVOYANCE POKEMON GO SCANNER`);
         log.info(`initialized with ${this.spawnpoints.length} spawnpoints and ${this.workerPool.workers.length} workers`);
     }
 
