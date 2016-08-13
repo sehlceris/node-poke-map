@@ -84,14 +84,14 @@ export class Clairvoyance {
                 return worker.hasBeenUsedAtLeastOnceDuringProgramExecution();
             }).length;
 
-            let timeRunning = Math.round((new Date() - this.initTime) / 1000);
+            let timeRunning = Math.round((new Date() - this.initTime) / 1000) / 60;
 
             log.info(`
             ********************************
             Benchmarks
             
             workers used: ${workersUsed}/${this.workerPool.workers.length}
-            time running: ${timeRunning}
+            time running: ${timeRunning} minutes
             ********************************
             `);
 
