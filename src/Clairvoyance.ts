@@ -116,6 +116,10 @@ export class Clairvoyance {
             ********************************
             `);
 
+            if (timeRunning > Config.minutesSimulated) {
+                process.exit(0);
+            }
+
         }, Utils.timestepTransformDown(Config.statisticLoggingInterval));
     }
 

@@ -6,7 +6,7 @@
   "topLeftOfScanArea": "111.111",
   "bottomRightOfScanArea": "-111.111",
 
-  "consoleLogLevel": "verbose",
+  "consoleLogLevel": "info",
   "fileLogLevel": "warn",
   "logFilePath": "scan.log",
   "statisticLoggingInterval": 30000,
@@ -15,6 +15,10 @@
   "randomWorkerDelayFudgeFactor": 1000,
   "randomGlobalScanDelayFudgeFactor": 300,
   "spawnScanDelay": 1000,
+
+  "simulate": true,
+  "simulationTimestep": 50,
+  "minutesSimulated": 300,
 
   "googleMapsApiKey": "AHAAAAAA",
   "workerLogins": [

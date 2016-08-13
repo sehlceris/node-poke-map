@@ -20,6 +20,7 @@ export interface Config {
     statisticLoggingInterval:number
     simulate:boolean
     simulationTimestep:number
+    minutesSimulated:number
 }
 
 let config = JSON.parse(fs.readFileSync(Constants.CONFIG_JSON_PATH, 'utf-8'));
