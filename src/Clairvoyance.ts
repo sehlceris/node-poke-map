@@ -136,6 +136,9 @@ export class Clairvoyance {
             worker allocation failures: ${workerAllocationFailures}
             average worker allocation failures per minute: ${workerAllocationFailuresPerMinuteStr}
             
+            worker scan delay: ${Config.workerScanDelayMs} ms
+            max worker speed: ${Config.workerMaximumMovementSpeedMetersPerSecond} m/s
+            
             request queue: ${requestQueueLength}
             
             total requests processed: ${totalRequestsProcessed}
@@ -143,6 +146,9 @@ export class Clairvoyance {
             
             total requests dropped: ${totalRequestsDropped}
             average requests dropped per minute: ${averageRequestsDroppedPerMinuteStr}
+            
+            scan center: ${Config.scanCenterLat}, ${Config.scanCenterLong}
+            scan radius: ${Config.scanRadiusMeters} meters
             
             spawnpoint count: ${this.spawnpoints.length}
             total spawns: ${this.spawnCount}
