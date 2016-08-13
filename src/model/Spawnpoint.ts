@@ -38,11 +38,11 @@ export default class Spawnpoint {
             //Timer to trigger spawn handler
             this.timerInterval = setInterval(() => {
                 this.fireSpawn();
-            }, Constants.HOUR);
+            }, Utils.timestepTransformDown(Constants.HOUR));
 
             //Fire spawn handler for the first time
             this.fireSpawn();
-        }, randomTimeout);
+        }, Utils.timestepTransformDown(randomTimeout));
         //TODO: Fix this random! It should be obviously set to whatever the spawn is
     }
 
@@ -71,7 +71,7 @@ export default class Spawnpoint {
     handleScan():void {
         let newScanTime = new Date();
         if (this.lastScanTime) {
-            let diff = newScanTime - this.lastScanTime;
+            let diff = Utils.timestepTransformDown(newScanTime - this.lastScanTime);
         }
         this.lastScanTime = newScanTime;
     }

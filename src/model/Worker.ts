@@ -47,7 +47,7 @@ export default class Worker {
             return Infinity;
         }
         else {
-            return new Date() - this.lastTimeFreed;
+            return Utils.timestepTransformUp(new Date() - this.lastTimeFreed);
         }
     }
 
@@ -81,7 +81,7 @@ export default class Worker {
             , 1, 1
         );
 
-        let timeDiff = (new Date() - this.lastTimeMoved);
+        let timeDiff = Utils.timestepTransformUp(new Date() - this.lastTimeMoved);
         let speed = meters / (timeDiff / 1000);
 
         let timeSeconds = Math.round(timeDiff / 1000);
@@ -107,7 +107,7 @@ export default class Worker {
     free():void {
         this.isFreeBool = true;
         this.lastTimeFreed = new Date();
-        this.currentRandomExtraDelay = Utils.getRandomInt(0, Config.randomWorkerDelayFudgeFactor);
+        this.currentRandomExtraDelay = Utils.timestepTransformDown(Utils.getRandomInt(0, Config.randomWorkerDelayFudgeFactor));
         log.debug(`worker ${this.id} freed`);
     }
 

@@ -13,27 +13,53 @@ export default class Utils {
                 (options.meta && Object.keys(options.meta).length ? '\n\t' + JSON.stringify(options.meta) : '' );
         };
 
-        var logger = new (winston.Logger)({
-            transports: [
-                new (winston.transports.Console)({
-                    level: Config.consoleLogLevel,
-                    timestamp: function () {
-                        return Date.now();
-                    },
-                    formatter: logFormatter
-                }),
-                new (winston.transports.File)({
-                    level: Config.fileLogLevel,
-                    filename: Config.logFilePath,
-                    timestamp: function () {
-                        return Date.now();
-                    },
-                    json: false,
-                    formatter: logFormatter
-                })
-            ]
+        let consoleTransport = new (winston.transports.Console)({
+            level: Config.consoleLogLevel,
+            timestamp: function () {
+                return Date.now();
+            },
+            formatter: logFormatter
         });
+
+        let fileTransport = new (winston.transports.File)({
+            level: Config.fileLogLevel,
+            filename: Config.logFilePath,
+            timestamp: function () {
+                return Date.now();
+            },
+            json: false,
+            formatter: logFormatter
+        });
+
+        let transports = [consoleTransport];
+
+        if (!Config.simulate) {
+            transports.push(fileTransport)
+        }
+
+        var logger = new (winston.Logger)({
+            transports: transports
+        });
+
         return logger;
+    }
+
+    static timestepTransformUp(time:number) {
+        if (Config.simulate === true) {
+            return time * Config.simulationTimestep;
+        }
+        else {
+            return time;
+        }
+    }
+
+    static timestepTransformDown(time:number) {
+        if (Config.simulate === true) {
+            return time / Config.simulationTimestep;
+        }
+        else {
+            return time;
+        }
     }
 
     static getRandomFloat(min:Number, max:Number) {

@@ -18,6 +18,8 @@ export interface Config {
     fileLogLevel:String
     logFilePath:String
     statisticLoggingInterval:number
+    simulate:boolean
+    simulationTimestep:number
 }
 
 let config = JSON.parse(fs.readFileSync(Constants.CONFIG_JSON_PATH, 'utf-8'));

@@ -78,7 +78,7 @@ export default class ScanRequestQueue {
                 log.debug(`waiting ${totalDelayTime} until next request is processed`);
                 setTimeout(() => {
                     resolve();
-                }, totalDelayTime);
+                }, Utils.timestepTransformDown(totalDelayTime));
             })
             .then(() => {
                 return this.executeScanRequest(request);
@@ -119,7 +119,7 @@ export default class ScanRequestQueue {
                 let result = `fake completion on worker id ${worker.id}`;
                 request.setCompleted(result);
                 resolve(result);
-            }, 1000);
+            }, Utils.timestepTransformDown(1000));
         });
     }
 }

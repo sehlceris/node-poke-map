@@ -42,6 +42,9 @@ export class Clairvoyance {
 
         log.info(`**********************************************`);
         log.info(`CLAIRVOYANCE POKEMON GO SCANNER`);
+        if (Config.simulate) {
+            log.warn(`running in simulation mode with timestep ${Config.simulationTimestep}`);
+        }
         log.info(`initialized with ${this.spawnpoints.length} spawnpoints and ${this.workerPool.workers.length} workers`);
     }
 
@@ -81,7 +84,7 @@ export class Clairvoyance {
         this.initTime = new Date();
 
         if (Config.statisticLoggingInterval < 1000) {
-            return false;
+            return;
         }
 
         setInterval(() => {
@@ -90,7 +93,7 @@ export class Clairvoyance {
                 return worker.hasBeenUsedAtLeastOnceDuringProgramExecution();
             }).length;
 
-            let timeRunning = Math.round((new Date() - this.initTime) / 1000) / 60;
+            let timeRunning = Math.round(((Utils.timestepTransformUp(new Date() - this.initTime) / 1000) / 60) * 10) / 10;
             let requestQueueLength = this.requestQueue.queue.length;
             let totalRequestsProcessed = this.requestQueue.totalRequestsProcessed;
             let averageRequestsProcessedPerMinute = (Math.round((totalRequestsProcessed / timeRunning) * 100) / 100);
@@ -99,7 +102,7 @@ export class Clairvoyance {
 
             log.info(`
             ********************************
-            Stats
+            Stats ${Config.simulate ? 'WARNING: SIMULATION ONLY MODE WITH TIMESTEP ' + Config.simulationTimestep : ''}
             
             workers used: ${workersUsed}/${this.workerPool.workers.length}
             time running: ${timeRunning} minutes
@@ -113,7 +116,7 @@ export class Clairvoyance {
             ********************************
             `);
 
-        }, Config.statisticLoggingInterval);
+        }, Utils.timestepTransformDown(Config.statisticLoggingInterval));
     }
 
     handleSpawn(spawnpoint:Spawnpoint) {
@@ -142,7 +145,7 @@ export class Clairvoyance {
                     worker.free();
                     log.warn(`failed to process scan for worker ${worker.id} on spawnpoint ${spawnpoint.id}: ${err}`);
                 });
-        }, Config.spawnScanDelay);
+        }, Utils.timestepTransformDown(Config.spawnScanDelay));
     }
 }
 
