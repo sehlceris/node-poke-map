@@ -114,12 +114,22 @@ export default class ScanRequestQueue {
 
             let worker = request.worker;
 
-            //TODO
-            setTimeout(() => {
-                let result = `fake completion on worker id ${worker.id}`;
-                request.setCompleted(result);
-                resolve(result);
-            }, Utils.timestepTransformDown(1000));
+            if (Config.simulate) {
+                setTimeout(() => {
+                    let result = `fake completion on worker id ${worker.id}`;
+                    request.setCompleted(result);
+                    resolve(result);
+                }, Utils.timestepTransformDown(1000));
+            }
+            else {
+                //TODO
+                setTimeout(() => {
+                    let result = `fake completion on worker id ${worker.id}`;
+                    request.setCompleted(result);
+                    resolve(result);
+                }, Utils.timestepTransformDown(1000));
+            }
+
         });
     }
 }
