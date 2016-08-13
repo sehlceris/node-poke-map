@@ -100,16 +100,17 @@ export class Clairvoyance {
                 return worker.hasBeenUsedAtLeastOnceDuringProgramExecution();
             }).length;
             let workerAllocationFailures = this.workerPool.workerAllocationFailures;
-            let workerAllocationFailuresPerMinute = (Math.round((workerAllocationFailures / timeRunning) * 100) / 100);
+            let workerAllocationFailuresPerMinuteStr = (workerAllocationFailures / timeRunning).toFixed(2);
 
             let requestQueueLength = this.requestQueue.queue.length;
             let totalRequestsProcessed = this.requestQueue.totalRequestsProcessed;
-            let averageRequestsProcessedPerMinute = (Math.round((totalRequestsProcessed / timeRunning) * 100) / 100);
+            let averageRequestsProcessedPerMinuteStr = (totalRequestsProcessed / timeRunning).toFixed(2);
             let totalRequestsDropped = this.requestQueue.totalRequestsDropped;
-            let averageRequestsDroppedPerMinute = (Math.round((totalRequestsDropped / timeRunning) * 100) / 100);
+            let averageRequestsDroppedPerMinuteStr = (totalRequestsDropped / timeRunning).toFixed(2);
 
-            let spawnScanPercentage = ((this.spawnsScannedSuccessfully / this.spawnsProcessed) * 100).toFixed(1);
-            let spawnMissedPercentage = (100 - spawnScanPercentage).toFixed(1);
+            let averageSpawnsPerMinuteStr = (this.spawnCount / timeRunning).toFixed(1);
+            let spawnScanPercentageStr = ((this.spawnsScannedSuccessfully / this.spawnsProcessed) * 100).toFixed(1);
+            let spawnMissedPercentageStr = (100 - parseFloat(spawnScanPercentageStr)).toFixed(1);
 
             log.info(`
             ********************************
@@ -119,20 +120,21 @@ export class Clairvoyance {
             
             workers allocated: ${workersUsed}/${this.workerPool.workers.length}
             worker allocation failures: ${workerAllocationFailures}
-            average worker allocation failures per minute: ${workerAllocationFailuresPerMinute}
+            average worker allocation failures per minute: ${workerAllocationFailuresPerMinuteStr}
             
             request queue: ${requestQueueLength}
             
             total requests processed: ${totalRequestsProcessed}
-            average requests processed per minute: ${averageRequestsProcessedPerMinute}
+            average requests processed per minute: ${averageRequestsProcessedPerMinuteStr}
             
             total requests dropped: ${totalRequestsDropped}
-            average requests dropped per minute: ${averageRequestsDroppedPerMinute}
+            average requests dropped per minute: ${averageRequestsDroppedPerMinuteStr}
             
             spawns: ${this.spawnCount}
+            average spawns per minute: ${averageSpawnsPerMinuteStr}
             spawns processed: ${this.spawnsProcessed}
             spawns scanned successfully: ${this.spawnsScannedSuccessfully}
-            percentage of spawns scanned: ${spawnScanPercentage}% (${spawnMissedPercentage}% missed)
+            percentage of spawns scanned: ${spawnScanPercentageStr}% (${spawnMissedPercentageStr}% missed)
             ********************************
             `);
 
