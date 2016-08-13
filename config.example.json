@@ -1,0 +1,8 @@
+{
+  "workerScanDelayMs": 15000,
+  "globalScanDelayMs": 2500,
+  "globalRequestsPerMinute": 60,
+  "topLeftOfScanArea": "111.111",
+  "bottomRightOfScanArea": "-111.111",
+  "googleMapsApiKey": "AAAAAAAAHHHHHAAAAAAA"
+}

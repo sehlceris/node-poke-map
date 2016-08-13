@@ -1,9 +1,12 @@
-let fs = require('fs');
-let log = require('winston');
-let bluebird = require('bluebird');
+import fs = require('fs');
+import bluebird = require('bluebird');
+import moment = require('moment');
 
 import Constants from '../Constants';
 import Worker from 'Worker';
+import Utils from '../Utils';
+
+const log = Utils.getLogger('Spawnpoint');
 
 export default class Spawnpoint {
     lat:number;
@@ -12,7 +15,9 @@ export default class Spawnpoint {
     id:number;
     time:number;
 
-    workers:Array<Worker>
+    scanStartTimeout:number;
+    lastScanTime:Date;
+    spawnListener:Function;
 
     constructor(o) {
         this.lat = o.lat;
@@ -20,12 +25,14 @@ export default class Spawnpoint {
         this.cell = o.cell;
         this.id = o.sid;
         this.time = o.time;
-
-        this.workers = [];
     }
 
-    assignWorker(worker:Worker) {
-        this.workers.push(worker);
+    startSpawnTimer():void {
+        
+    }
+
+    registerSpawnListener(listener:Function):void {
+        this.spawnListener = listener;
     }
 
 }

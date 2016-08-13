@@ -1,5 +1,5 @@
 let fs = require('fs');
-import Constants from 'Constants';
+import Constants from './Constants';
 
 let gyms;
 let geoGyms;
