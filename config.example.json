@@ -1,10 +1,22 @@
 {
-  "workerScanDelayMs": 15000,
-  "globalScanDelayMs": 2500,
-  "workerMaximumMovementSpeedMetersPerSecond": 10,
+  "workerScanDelayMs": 10250,
+  "globalScanDelayMs": 200,
+  "workerMaximumMovementSpeedMetersPerSecond": 15,
+  "maximumRequestQueueLength": 100,
   "topLeftOfScanArea": "111.111",
   "bottomRightOfScanArea": "-111.111",
-  "googleMapsApiKey": "AAAAAAAAHHHHHAAAAAAA",
+
+  "consoleLogLevel": "verbose",
+  "fileLogLevel": "warn",
+  "logFilePath": "scan.log",
+  "statisticLoggingInterval": 30000,
+
+  "enableGreedyWorkerAllocation": false,
+  "randomWorkerDelayFudgeFactor": 1000,
+  "randomGlobalScanDelayFudgeFactor": 300,
+  "spawnScanDelay": 1000,
+
+  "googleMapsApiKey": "AHAAAAAA",
   "workerLogins": [
     {
       "username": "ash",

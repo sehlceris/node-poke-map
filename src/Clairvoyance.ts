@@ -108,7 +108,7 @@ export class Clairvoyance {
             total requests processed: ${totalRequestsProcessed}
             average requests processed per minute: ${averageRequestsProcessedPerMinute}
             
-            total requests dropped: ${averageRequestsProcessedPerMinute}
+            total requests dropped: ${totalRequestsDropped}
             average requests dropped per minute: ${averageRequestsDroppedPerMinute}
             ********************************
             `);
