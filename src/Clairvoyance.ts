@@ -12,18 +12,29 @@ import Data from './Data';
 
 import Utils from 'Utils';
 
-const log:any = Utils.getLogger('JoltMap');
+const log:any = Utils.getLogger('Main');
 
-export class JoltMap {
+let instance = null;
+
+export class Clairvoyance {
 
     spawnpoints:Array<Spawnpoint>;
     requestQueue:RequestQueue;
     workerPool:WorkerPool;
 
+    static getInstance():Clairvoyance {
+        if (!instance) {
+            instance = new Clairvoyance();
+        }
+        return instance;
+    }
+
     constructor() {
         this.initSpawnPoints();
         this.initWorkers();
         this.requestQueue = new RequestQueue();
+
+        log.info(`initialized with ${this.spawnpoints.length} spawnpoints and ${this.workerPool.workers.length} workers`);
     }
 
     initSpawnPoints():void {
@@ -81,3 +92,5 @@ export class JoltMap {
             });
     }
 }
+
+Clairvoyance.getInstance();

@@ -9,5 +9,7 @@ scratch/
 scratch.ts
 
 config.json
+config.production.json
+config.dev.json
 accounts.json
 db.sqlite
