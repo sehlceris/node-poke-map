@@ -80,7 +80,7 @@ export class Clairvoyance {
 
         this.initTime = new Date();
 
-        if (!Config.statisticLoggingInterval < 1000) {
+        if (Config.statisticLoggingInterval < 1000) {
             return false;
         }
 
