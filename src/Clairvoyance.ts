@@ -34,7 +34,7 @@ export class Clairvoyance {
 
     constructor() {
 
-        this.initBenchmarking();
+        this.initStatisticLogging();
 
         this.initSpawnPoints();
         this.initWorkers();
@@ -74,9 +74,13 @@ export class Clairvoyance {
         this.workerPool = new WorkerPool(workers);
     }
 
-    initBenchmarking():void {
+    initStatisticLogging():void {
 
         this.initTime = new Date();
+
+        if (!Config.statisticLoggingInterval < 1000) {
+            return false;
+        }
 
         setInterval(() => {
 
@@ -93,19 +97,21 @@ export class Clairvoyance {
 
             log.info(`
             ********************************
-            Benchmarks
+            Stats
             
             workers used: ${workersUsed}/${this.workerPool.workers.length}
             time running: ${timeRunning} minutes
             request queue: ${requestQueueLength} requests
+            
             total requests processed: ${totalRequestsProcessed}
             average requests processed per minute: ${averageRequestsProcessedPerMinute}
+            
             total requests dropped: ${averageRequestsProcessedPerMinute}
             average requests dropped per minute: ${averageRequestsDroppedPerMinute}
             ********************************
             `);
 
-        }, Constants.MINUTE);
+        }, Config.statisticLoggingInterval);
     }
 
     handleSpawn(spawnpoint:Spawnpoint) {
@@ -132,7 +138,7 @@ export class Clairvoyance {
                 })
                 .catch((err) => {
                     worker.free();
-                    log.error(`failed to process scan for worker ${worker.id} on spawnpoint ${spawnpoint.id}: ${err}`);
+                    log.warn(`failed to process scan for worker ${worker.id} on spawnpoint ${spawnpoint.id}: ${err}`);
                 });
         }, Config.spawnScanDelay);
     }

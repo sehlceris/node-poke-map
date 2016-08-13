@@ -17,6 +17,7 @@ export interface Config {
     consoleLogLevel:String
     fileLogLevel:String
     logFilePath:String
+    statisticLoggingInterval:number
 }
 
 let config = JSON.parse(fs.readFileSync(Constants.CONFIG_JSON_PATH, 'utf-8'));
