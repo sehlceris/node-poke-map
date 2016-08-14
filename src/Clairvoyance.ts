@@ -110,11 +110,25 @@ export class Clairvoyance {
         setInterval(() => {
             let timeRunning = Math.round(((Utils.timestepTransformUp(new Date() - this.initTime) / 1000) / 60) * 10) / 10;
 
-            let workersUsed = this.workerPool.workers.filter((worker) => {
-                return worker.hasBeenUsedAtLeastOnceDuringProgramExecution();
-            }).length;
+            let allocatedWorkers = this.workerPool.getAllocatedWorkers();
+
+            let workersUsed = allocatedWorkers.length;
             let workerAllocationFailures = this.workerPool.workerAllocationFailures;
             let workerAllocationFailuresPerMinuteStr = (workerAllocationFailures / timeRunning).toFixed(2);
+
+            let totalWorkerMovement = 0;
+            let highestWorkerMovement = 0;
+            let highestWorkerSpeedId = -1;
+            allocatedWorkers.forEach((worker) => {
+                totalWorkerMovement += worker.totalMetersMoved;
+                if (worker.totalMetersMoved > highestWorkerMovement) {
+                    highestWorkerMovement = worker.totalMetersMoved;
+                    highestWorkerSpeedId = worker.id;
+                }
+            })
+            let averageWorkerMetersMoved = (totalWorkerMovement / allocatedWorkers.length);
+            let averageWorkerSpeed = ((averageWorkerMetersMoved / timeRunning) / 60).toFixed(2);
+            let highestWorkerSpeed = ((highestWorkerMovement / timeRunning) / 60).toFixed(2);
 
             let requestQueueLength = this.requestQueue.queue.length;
             let totalRequestsProcessed = this.requestQueue.totalRequestsProcessed;
@@ -137,7 +151,9 @@ export class Clairvoyance {
             average worker allocation failures per minute: ${workerAllocationFailuresPerMinuteStr}
             
             worker scan delay: ${Config.workerScanDelayMs} ms
-            max worker speed: ${Config.workerMaximumMovementSpeedMetersPerSecond} m/s
+            max worker travel speed: ${Config.workerMaximumMovementSpeedMetersPerSecond} m/s
+            highest average worker speed (worker ${highestWorkerSpeedId}) : ${highestWorkerSpeed} m/s
+            average worker speed: ${averageWorkerSpeed} m/s
             
             request queue: ${requestQueueLength}
             

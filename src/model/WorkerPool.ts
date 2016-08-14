@@ -19,6 +19,12 @@ export default class WorkerPool {
         this.workerAllocationFailures = 0;
     }
 
+    getAllocatedWorkers():Array<Worker> {
+        return this.workers.filter((worker:Worker) => {
+            return worker.hasBeenUsedAtLeastOnceDuringProgramExecution();
+        });
+    }
+
     //Get a worker that can walk to the specified coordinates. Returns null if no worker is available.
     getWorkerThatCanWalkTo(lat, long) {
 

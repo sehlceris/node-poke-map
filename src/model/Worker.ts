@@ -20,12 +20,13 @@ export default class Worker {
     username:String;
     password:String;
     isFreeBool:Boolean;
-    currentLat:String;
-    currentLong:String;
+    currentLat:number;
+    currentLong:number;
     lastTimeMoved:Date;
     lastTimeFreed:Date;
     lastTimeReserved:Date;
     currentRandomExtraDelay:Number;
+    totalMetersMoved:Number;
 
     constructor(params:LoginData) {
         this.isFreeBool = true;
@@ -34,6 +35,7 @@ export default class Worker {
 
         this.username = params.username;
         this.password = params.password;
+        this.totalMetersMoved = 0;
 
         this.currentRandomExtraDelay = Utils.getRandomInt(0, Config.randomWorkerDelayFudgeFactor);
     }
@@ -58,6 +60,22 @@ export default class Worker {
     }
 
     moveTo(lat, long):void {
+
+        if (this.currentLat && this.currentLong) {
+            let meters = geolib.getDistance(
+                {
+                    latitude: lat,
+                    longitude: long
+                },
+                {
+                    latitude: this.currentLat,
+                    longitude: this.currentLong
+                }
+                , 1, 1
+            );
+            this.totalMetersMoved += meters;
+        }
+
         this.currentLat = lat;
         this.currentLong = long;
         this.lastTimeMoved = new Date();
