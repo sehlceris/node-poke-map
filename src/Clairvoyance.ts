@@ -143,29 +143,21 @@ export class Clairvoyance {
             log.info(`
             ********************************
             Stats ${Config.simulate ? 'WARNING: SIMULATION ONLY MODE WITH TIMESTEP ' + Config.simulationTimestep + ' AND REQUEST DURATION ' + Config.simulationRequestDuration : ''}
-            
             time running: ${timeRunning} minutes
-            
+            scan center: ${Config.scanCenterLat}, ${Config.scanCenterLong}
+            scan radius: ${Config.scanRadiusMeters} meters
             workers allocated: ${workersUsed}/${this.workerPool.workers.length}
             worker allocation failures: ${workerAllocationFailures}
             average worker allocation failures per minute: ${workerAllocationFailuresPerMinuteStr}
-            
             worker scan delay: ${Config.workerScanDelayMs} ms
             max worker travel speed: ${Config.workerMaximumMovementSpeedMetersPerSecond} m/s
             highest average worker speed (worker ${highestWorkerSpeedId}) : ${highestWorkerSpeed} m/s
             average worker speed: ${averageWorkerSpeed} m/s
-            
             request queue: ${requestQueueLength}
-            
             total requests processed: ${totalRequestsProcessed}
             average requests processed per minute: ${averageRequestsProcessedPerMinuteStr}
-            
             total requests dropped: ${totalRequestsDropped}
             average requests dropped per minute: ${averageRequestsDroppedPerMinuteStr}
-            
-            scan center: ${Config.scanCenterLat}, ${Config.scanCenterLong}
-            scan radius: ${Config.scanRadiusMeters} meters
-            
             spawnpoint count: ${this.spawnpoints.length}
             total spawns: ${this.spawnCount}
             average spawns per minute: ${averageSpawnsPerMinuteStr}
