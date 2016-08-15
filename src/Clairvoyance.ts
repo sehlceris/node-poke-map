@@ -119,16 +119,23 @@ export class Clairvoyance {
             let totalWorkerMovement = 0;
             let highestWorkerMovement = 0;
             let highestWorkerSpeedId = -1;
+            let lowestWorkerMovement = Infinity;
+            let lowestWorkerSpeedId = -1;
             allocatedWorkers.forEach((worker) => {
                 totalWorkerMovement += worker.totalMetersMoved;
                 if (worker.totalMetersMoved > highestWorkerMovement) {
                     highestWorkerMovement = worker.totalMetersMoved;
                     highestWorkerSpeedId = worker.id;
                 }
+                if (worker.totalMetersMoved < lowestWorkerMovement) {
+                    lowestWorkerMovement = worker.totalMetersMoved;
+                    lowestWorkerSpeedId = worker.id;
+                }
             })
             let averageWorkerMetersMoved = (totalWorkerMovement / allocatedWorkers.length);
             let averageWorkerSpeed = ((averageWorkerMetersMoved / timeRunning) / 60).toFixed(2);
             let highestWorkerSpeed = ((highestWorkerMovement / timeRunning) / 60).toFixed(2);
+            let lowestWorkerSpeed = ((lowestWorkerMovement / timeRunning) / 60).toFixed(2);
 
             let requestQueueLength = this.requestQueue.queue.length;
             let totalRequestsProcessed = this.requestQueue.totalRequestsProcessed;
@@ -152,7 +159,7 @@ export class Clairvoyance {
             average worker allocation failures per minute: ${workerAllocationFailuresPerMinuteStr}
             worker scan delay: ${Config.workerScanDelayMs} ms
             max worker travel speed: ${Config.workerMaximumMovementSpeedMetersPerSecond} m/s
-            average worker speed: ${averageWorkerSpeed} m/s
+            avg worker speed: ${averageWorkerSpeed} m/s; highest: ${highestWorkerSpeed} (worker ${highestWorkerSpeedId}); lowest: ${lowestWorkerSpeed} (worker ${lowestWorkerSpeedId})
             request queue: ${requestQueueLength}
             total requests processed: ${totalRequestsProcessed}
             average requests processed per minute: ${averageRequestsProcessedPerMinuteStr}
