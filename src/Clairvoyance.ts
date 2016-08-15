@@ -127,7 +127,7 @@ export class Clairvoyance {
                     highestWorkerMovement = worker.totalMetersMoved;
                     highestWorkerSpeedId = worker.id;
                 }
-                if (worker.totalMetersMoved < lowestWorkerMovement) {
+                if (worker.totalMetersMoved > 0 && worker.totalMetersMoved < lowestWorkerMovement) {
                     lowestWorkerMovement = worker.totalMetersMoved;
                     lowestWorkerSpeedId = worker.id;
                 }
