@@ -152,7 +152,6 @@ export class Clairvoyance {
             average worker allocation failures per minute: ${workerAllocationFailuresPerMinuteStr}
             worker scan delay: ${Config.workerScanDelayMs} ms
             max worker travel speed: ${Config.workerMaximumMovementSpeedMetersPerSecond} m/s
-            highest average worker speed (worker ${highestWorkerSpeedId}) : ${highestWorkerSpeed} m/s
             average worker speed: ${averageWorkerSpeed} m/s
             request queue: ${requestQueueLength}
             total requests processed: ${totalRequestsProcessed}

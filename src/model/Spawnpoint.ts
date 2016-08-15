@@ -1,10 +1,9 @@
-import fs = require('fs');
+let moment = require('moment');
 import bluebird = require('bluebird');
-import moment = require('moment');
 
 import Constants from '../Constants';
-import Worker from 'Worker';
 import Utils from '../Utils';
+import Config from '../Config';
 
 const log:any = Utils.getLogger('Spawnpoint');
 
@@ -30,20 +29,38 @@ export default class Spawnpoint {
 
     startSpawnTimer():void {
 
-        let randomTimeout = Utils.getRandomInt(0, Constants.HOUR);
-
         this.stopSpawnTimer();
-        this.timerStartTimeout = setTimeout(() => {
 
-            //Timer to trigger spawn handler
+        let spawnMomentForThisHour = moment(new Date()).startOf('hour').add(this.time, 'seconds');
+        let spawnTimeout = spawnMomentForThisHour - new Date(); //time diff from now that spawn will occur
+        let firstFireDelay = spawnTimeout; //timeout for when the first spawn will be fired and the hour timer started
+
+        //If the spawn is in the past...
+        if (firstFireDelay <= 0) {
+
+            //If the spawn occurred less than N minutes ago, fire the spawn immediately...
+            if (firstFireDelay < 0 && firstFireDelay >= (0 - (Config.spawnpointLookbackMinutes * Constants.MINUTE))) {
+                setTimeout(() => {
+                    log.info(`${this.id} fired ${(60 - Math.abs(firstFireDelay / Constants.MINUTE)).toFixed(1)} min in the past, firing spawn immediately`);
+                    this.fireSpawn();
+                }, 0);
+            }
+
+            //...and then add an hour to the delay
+            firstFireDelay += Constants.HOUR;
+        }
+
+        log.info(`${this.id} first fire in ${(firstFireDelay / Constants.MINUTE).toFixed(1)} min`);
+
+        //Timeout to trigger spawn for the first time
+        this.timerStartTimeout = setTimeout(() => {
+            this.fireSpawn();
+
+            //Start an interval timer to trigger spawn each hour
             this.timerInterval = setInterval(() => {
                 this.fireSpawn();
             }, Utils.timestepTransformDown(Constants.HOUR));
-
-            //Fire spawn handler for the first time
-            this.fireSpawn();
-        }, Utils.timestepTransformDown(randomTimeout));
-        //TODO: Fix this random! It should be obviously set to whatever the spawn is
+        }, Utils.timestepTransformDown(firstFireDelay));
     }
 
     stopSpawnTimer():void {

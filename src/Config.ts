@@ -2,10 +2,11 @@ let fs = require('fs');
 import Constants from './Constants';
 
 export interface Config {
-    //Make sure this is configured properly
+    //End user will probably want to configure these
     workerScanDelayMs:number; // delay each individual worker must wait before scanning again
     globalScanDelayMs:number; // delay between sending scan requests globally (includes all workers)
     spawnScanDelay:number; // delay between a spawn occurring and the scanner trying to pick it up
+    spawnpointLookbackMinutes:number; // when starting up the scanner, should it scan points that occurred in the past? if so, how many minutes back?
     workerMaximumMovementSpeedMetersPerSecond:number; //maximum speed a worker may move in order to reach a spawn
     maximumRequestQueueLength:number; // maximum number of requests that can be queued before dropping
     scanCenterLat:number; // lat number describing scan center
