@@ -41,7 +41,7 @@ export default class Spawnpoint {
             //If the spawn occurred less than N minutes ago, fire the spawn immediately...
             if (firstFireDelay < 0 && firstFireDelay >= (0 - (Config.spawnpointLookbackMinutes * Constants.MINUTE))) {
                 setTimeout(() => {
-                    log.info(`${this.id} fired ${(60 - Math.abs(firstFireDelay / Constants.MINUTE)).toFixed(1)} min in the past, firing spawn immediately`);
+                    log.debug(`${this.id} fired ${(60 - Math.abs(firstFireDelay / Constants.MINUTE)).toFixed(1)} min in the past, firing spawn immediately`);
                     this.fireSpawn();
                 }, 0);
             }
@@ -50,7 +50,7 @@ export default class Spawnpoint {
             firstFireDelay += Constants.HOUR;
         }
 
-        log.info(`${this.id} first fire in ${(firstFireDelay / Constants.MINUTE).toFixed(1)} min`);
+        log.debug(`${this.id} first fire in ${(firstFireDelay / Constants.MINUTE).toFixed(1)} min`);
 
         //Timeout to trigger spawn for the first time
         this.timerStartTimeout = setTimeout(() => {
