@@ -53,7 +53,7 @@ export default class WorkerPool {
 
         if (true === searchLoop) {
             //If we get here, no free worker was found, reset index to 0 and begin search again
-            for (i = i; i < lastWorkerIndex; i++) {
+            for (i = 0; i < lastWorkerIndex; i++) {
                 if (this.workers[i].isFree() && this.workers[i].hasSatisfiedScanDelay() && this.workers[i].canMoveTo(lat, long)) {
                     this.currentWorkerIndex = i;
                     return this.workers[i];
