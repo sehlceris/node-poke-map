@@ -73,7 +73,7 @@ export default class AccurateInterval {
         }, nextStartDelay);
     }
 
-    calculateNextStartDelay(expectedExecutionTime:any, interval:Boolean):void {
+    calculateNextStartDelay(expectedExecutionTime:any, interval:Number):Number {
         let currentTime = moment(new Date());
         let expectedExecutionMoment = moment(expectedExecutionTime);
         expectedExecutionMoment.add(interval, 'milliseconds');
