@@ -28,7 +28,7 @@ export interface Config {
 
     //Simulation
     simulate:boolean // if true, requests will NOT be made to the API and instead a simulation will occur. useful for determining proper settings for workers/scan delay
-    simulationTimestep:number // while simulating, the program speed will be multiplied by this number. '5' will run the scans/spawns 5 times faster than real life. if set too high, will not be accurate and may screw up your computer
+    simulationTimeMultiplier:number // while simulating, the program speed will be multiplied by this number. '5' will run the scans/spawns 5 times faster than real life. if set too high, will not be accurate and may screw up your computer
     simulationRequestDuration:number // how long do you think the servers will take to respond, in milliseconds?
     minutesSimulated:number // how many minutes of runtime do you want to simulate?
 }

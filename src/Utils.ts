@@ -47,7 +47,7 @@ export default class Utils {
 
     static timestepTransformUp(time:number) {
         if (Config.simulate === true) {
-            return time * Config.simulationTimestep;
+            return time * Config.simulationTimeMultiplier;
         }
         else {
             return time;
@@ -56,7 +56,7 @@ export default class Utils {
 
     static timestepTransformDown(time:number) {
         if (Config.simulate === true) {
-            return time / Config.simulationTimestep;
+            return time / Config.simulationTimeMultiplier;
         }
         else {
             return time;

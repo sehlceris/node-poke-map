@@ -27,6 +27,8 @@ export default class Worker {
     lastTimeReserved:Date;
     currentRandomExtraDelay:Number;
     totalMetersMoved:Number;
+    totalMovements:Number;
+    totalScans:Number;
 
     constructor(params:LoginData) {
         this.isFreeBool = true;
@@ -36,6 +38,8 @@ export default class Worker {
         this.username = params.username;
         this.password = params.password;
         this.totalMetersMoved = 0;
+        this.totalMovements = 0;
+        this.totalScans = 0;
 
         this.currentRandomExtraDelay = Utils.getRandomInt(0, Config.randomWorkerDelayFudgeFactor);
     }
@@ -79,6 +83,7 @@ export default class Worker {
         this.currentLat = lat;
         this.currentLong = long;
         this.lastTimeMoved = new Date();
+        this.totalMovements++;
         log.debug(`worker ${this.id} moved to ${lat}, ${long}`);
     }
 
@@ -114,6 +119,10 @@ export default class Worker {
             log.debug(`worker ${this.id} is unable to move to ${lat}, ${long} because it would move at ${roundedSpeed} vs the maximum of ${Config.workerMaximumMovementSpeedMetersPerSecond}`);
             return false;
         }
+    }
+
+    incrementScanCounter():void {
+        this.totalScans++;
     }
 
     reserve():void {
