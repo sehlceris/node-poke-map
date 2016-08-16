@@ -1,3 +1,4 @@
+let moment = require('moment');
 import winston = require('winston');
 import Logger = winston.Logger;
 

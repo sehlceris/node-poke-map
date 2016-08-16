@@ -81,7 +81,7 @@ export class Clairvoyance {
         });
 
         this.spawnpoints.forEach((spawnpoint:Spawnpoint) => {
-            spawnpoint.registerSpawnListener(this.handleSpawn.bind(this));
+            spawnpoint.setSpawnListener(this.handleSpawn.bind(this));
             spawnpoint.startSpawnTimer();
         });
     }
@@ -152,11 +152,11 @@ export class Clairvoyance {
             Stats ${Config.simulate ? 'WARNING: SIMULATION ONLY MODE WITH TIMESTEP ' + Config.simulationTimestep + ' AND REQUEST DURATION ' + Config.simulationRequestDuration : ''}
             time running: ${timeRunning} minutes
             scan center: ${Config.scanCenterLat}, ${Config.scanCenterLong}; scan radius: ${Config.scanRadiusMeters} meters; spawnpoint count: ${this.spawnpoints.length}
+            global scan delay: ${Config.globalScanDelayMs}; worker scan delay: ${Config.workerScanDelayMs} ms
             
             workers allocated: ${workersUsed}/${this.workerPool.workers.length}
             worker allocation failures: ${workerAllocationFailures}
             average worker allocation failures per minute: ${workerAllocationFailuresPerMinuteStr}
-            worker scan delay: ${Config.workerScanDelayMs} ms
             max worker travel speed: ${Config.workerMaximumMovementSpeedMetersPerSecond} m/s
             avg worker speed: ${averageWorkerSpeed} m/s; highest: ${highestWorkerSpeed} (worker ${highestWorkerSpeedId}); lowest: ${lowestWorkerSpeed} (worker ${lowestWorkerSpeedId})
             
