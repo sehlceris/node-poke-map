@@ -2,7 +2,13 @@
 node_modules/
 typings/
 build/
-data/
+data/geo_gyms.json
+data/geo_stops.json
+data/gyms.json
+data/pokes.json
+data/spawns.json
+data/spawns.production.json
+data/stops.json
 src/.baseDir.ts
 
 scratch/
