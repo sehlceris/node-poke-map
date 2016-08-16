@@ -3,6 +3,7 @@ let geolib = require('geolib');
 import bluebird = require('bluebird');
 
 import Pokemon from './model/Pokemon';
+import PluginManager from './PluginManager';
 import Spawnpoint from './model/Spawnpoint';
 import Worker from './model/Worker';
 import WorkerPool from './model/WorkerPool';
@@ -23,6 +24,7 @@ export class Clairvoyance {
     spawnpoints:Array<Spawnpoint>;
     requestQueue:RequestQueue;
     workerPool:WorkerPool;
+    pluginManager:PluginManager;
     spawnCount:number;
     spawnsProcessed:number;
     spawnsScannedSuccessfully:number;
@@ -38,7 +40,11 @@ export class Clairvoyance {
 
     constructor() {
 
-        this.initStatisticLogging();
+        log.info(`**********************************************`);
+        log.info(`CLAIRVOYANCE POKEMON GO SCANNER`);
+        if (Config.simulate) {
+            log.warn(`running in simulation mode with timestep ${Config.simulationTimeMultiplier}`);
+        }
 
         this.spawnCount = 0;
         this.spawnsProcessed = 0;
@@ -46,13 +52,11 @@ export class Clairvoyance {
         this.initSpawnPoints();
         this.initWorkers();
         this.requestQueue = new RequestQueue();
+        this.pluginManager = new PluginManager();
 
-        log.info(`**********************************************`);
-        log.info(`CLAIRVOYANCE POKEMON GO SCANNER`);
-        if (Config.simulate) {
-            log.warn(`running in simulation mode with timestep ${Config.simulationTimeMultiplier}`);
-        }
         log.info(`initialized with ${this.spawnpoints.length} spawnpoints and ${this.workerPool.workers.length} workers`);
+
+        this.initStatisticLogging();
     }
 
     initSpawnPoints():void {

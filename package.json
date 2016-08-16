@@ -14,6 +14,7 @@
     "geolib": "^2.0.21",
     "moment": "^2.14.1",
     "pogobuf": "^1.5.0",
+    "slackbots": "^0.5.2",
     "winston": "^2.2.0"
   },
   "devDependencies": {
