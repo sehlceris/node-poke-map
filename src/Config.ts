@@ -41,6 +41,8 @@ export interface Plugins {
 }
 
 export interface SlackBotConfig {
+    enabled:Boolean;
+    sendMessageOnInitialization:Boolean;
     token:String;
     name:String;
     channel:String;

@@ -26,11 +26,13 @@ export default class SlackBot {
             name: this.name
         });
 
-        this.bot.on('start', () => {
-            let message = `Clairvoyance SlackBot notifier initialized. Subscriptions: ${JSON.stringify(this.subscriptions)}`;
-            log.info(message);
-            this.bot.postMessageToChannel(this.channel, message);
-        });
+        if (config.sendMessageOnInitialization) {
+            this.bot.on('start', () => {
+                let message = `Clairvoyance SlackBot notifier initialized. Subscriptions: ${JSON.stringify(this.subscriptions)}`;
+                log.info(message);
+                this.bot.postMessageToChannel(this.channel, message);
+            });
+        }
     }
 
     getPluginName():String {
