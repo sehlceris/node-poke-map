@@ -9,6 +9,7 @@ const log:any = Utils.getLogger('PluginManager');
 
 export interface Plugin {
     handleSpawn(pokemon:Pokemon):void;
+    handleError(error:String):void;
     getPluginName():String;
 }
 

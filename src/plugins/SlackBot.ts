@@ -47,6 +47,11 @@ export default class SlackBot {
             this.bot.postMessageToChannel(this.channel, message);
         }
     }
+
+    handleError(error:String):void {
+        let message = `ERROR: ${error}`;
+        this.bot.postMessageToChannel(this.channel, message);
+    }
 }
 
 module.exports = SlackBot;
