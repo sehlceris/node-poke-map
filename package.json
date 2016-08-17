@@ -9,6 +9,7 @@
   "author": "Christopher Lee",
   "license": "You may not use this code in any way. I might release it under different terms later.",
   "dependencies": {
+    "@google/maps": "^0.1.0",
     "bluebird": "^3.4.1",
     "fs": "0.0.2",
     "geolib": "^2.0.21",

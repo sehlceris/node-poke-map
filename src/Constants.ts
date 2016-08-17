@@ -7,6 +7,7 @@ export default class Constants {
     static STOPS_JSON_PATH:string = 'data/stops.json';
     static GEO_STOPS_JSON_PATH:string = 'data/geo_stops.json';
     static SPAWNS_JSON_PATH:string = 'data/spawns.json';
+    static SPAWNS_WITH_ELEVATIONS_JSON_PATH:string = 'data/spawns_with_elevations.json';
     static POKEMON_JSON_PATH:string = 'data/pokes.json';
     static PLUGINS_STAT_PATH:string = 'build/plugins/';
     static PLUGINS_REQUIRE_PATH:string = './plugins/';
