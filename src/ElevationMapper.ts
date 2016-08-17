@@ -8,6 +8,7 @@ import Constants from './Constants';
 const log:any = Utils.getLogger('ElevationMapper');
 
 const LOCATIONS_PER_REQUEST = 128;
+const DELAY_BETWEEN_REQUESTS = 3000;
 const ELEVATION_JSON_KEY = 'elevation';
 const MAXIMUM_LAT_DIFF_FOR_MATCH = 0.0000000000001;
 const MAXIMUM_LONG_DIFF_FOR_MATCH = 0.000000000001;
@@ -76,6 +77,11 @@ export default class ElevationMapper {
     process():Promise {
         log.info(`processing segment ${this.segmentIndex}`);
         return this.populateSegmentData(this.segments[this.segmentIndex], this.segmentIndex)
+            .then(() => {
+                return new Promise((resolve, reject) => {
+                    setTimeout(resolve, DELAY_BETWEEN_REQUESTS);
+                })
+            })
             .then(() => {
                 log.info(`processed segment ${this.segmentIndex}`);
                 if (this.segmentIndex < this.segments.length - 1) {
