@@ -47,31 +47,6 @@ export default class ElevationMapper {
                 this.writeJson(this.spawnsJson);
                 log.info(`write complete`);
             });
-
-        // return new Promise((resolve, reject) => {
-        //
-        //     let cumulativeDelay = 0;
-        //     let segmentPromises = segments.map((segment, i) => {
-        //         return new Promise(
-        //             (resolve, reject) => {
-        //                 setTimeout(resolve, cumulativeDelay);
-        //                 cumulativeDelay += DELAY_BETWEEN_REQUESTS;
-        //             })
-        //             .then(() => {
-        //                 log.info(`populating segment ${i}`);
-        //                 return this.populateSegmentData(segment, i);
-        //             });
-        //     });
-        //
-        //     return Promise.all(segmentPromises)
-        //         .then(() => {
-        //             log.info(`writing spawns json at ${Constants.SPAWNS_WITH_ELEVATIONS_JSON_PATH}`);
-        //             this.writeJson(this.spawnsJson);
-        //             log.info(`write complete`);
-        //             return resolve();
-        //         })
-        //         .catch(reject);
-        // })
     }
 
     process():Promise {
@@ -98,6 +73,7 @@ export default class ElevationMapper {
             })
     }
 
+    //Segments the spawns array into an array of segments to be processed
     segmentLocations(spawns:Array):Array<Array> {
 
         let segments = [];
@@ -113,6 +89,7 @@ export default class ElevationMapper {
         return segments;
     }
 
+    //Make the elevation request for the specified segment, and add all the elevations into the original spawn json
     populateSegmentData(segment, segmentIndex):Promise {
         let spawnLatLongs = segment.map((spawn) => {
             return {
@@ -150,6 +127,7 @@ export default class ElevationMapper {
                                     return false;
                                 }
 
+                                //Google doesn't return the exact lat/lng that you gave it - you need to allow some fudge space
                                 let diffLat = Math.abs(result.location.lat - spawn.lat);
                                 let diffLong = Math.abs(result.location.lng - spawn.lng);
 
