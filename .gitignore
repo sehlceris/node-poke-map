@@ -8,6 +8,7 @@ data/gyms.json
 data/pokes.json
 data/spawns.json
 data/spawns.production.json
+data/spawns_with_elevations.json
 data/stops.json
 src/.baseDir.ts
 
