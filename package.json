@@ -16,6 +16,7 @@
     "grunt-concurrent": "^2.3.1",
     "grunt-tslint": "^3.2.0",
     "moment": "^2.14.1",
+    "node-int64": "^0.4.0",
     "pogobuf": "^1.5.2",
     "slackbots": "^0.5.2",
     "winston": "^2.2.0"
