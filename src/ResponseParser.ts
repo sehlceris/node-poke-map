@@ -17,8 +17,8 @@ export default class ResponseParser {
 		let wilds = pogobufMapResponse.wild_pokemons;
 		let pokes = wilds.map((wild) => {
 			let encounterIdInt64 = new Int64(wild.encounter_id.high, wild.encounter_id.low);
-			let encodedEncounterId = Utils.btoa(encounterIdInt64.toString());
-			log.info(`encounter id: ${encodedEncounterId}  ${encounterIdInt64}`);
+			let encounterIdOctetString = encounterIdInt64.toOctetString();
+			log.info(`encounter id: ${encounterIdOctetString}`);
 
 			let lastModifiedTimestampMsInt64 = new Int64(wild.last_modified_timestamp_ms.high, wild.last_modified_timestamp_ms.low);
 
@@ -33,7 +33,7 @@ export default class ResponseParser {
 			log.info(`disappear time: ${disappearTime} | ${disappearTimeMs}`);
 
 			let pkmnData = {
-				encounterId: encodedEncounterId,
+				encounterId: encounterIdOctetString,
 				spawnpointId: wild.spawn_point_id,
 				number: wild.pokemon_data.pokemon_id,
 				disappearTime: disappearTime,
