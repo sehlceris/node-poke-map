@@ -1,26 +1,51 @@
 {
   "workerScanDelayMs": 10250,
-  "globalScanDelayMs": 200,
-  "workerMaximumMovementSpeedMetersPerSecond": 15,
+  "globalScanDelayMs": 300,
+  "spawnScanDelay": 10000,
+  "spawnpointLookbackMinutes": 0,
+  "workerMaximumMovementSpeedMetersPerSecond": 13,
   "maximumRequestQueueLength": 100,
-  "scanCenter": "111.111, -222.222",
-  "scanRadiusMeters": 500,
+  "scanCenterLat": 99.99,
+  "scanCenterLong": -99.99,
+  "scanRadiusMeters": 99500,
+  "googleMapsApiKey": "AHAAAAADASDb_hf734gh",
 
   "consoleLogLevel": "info",
-  "fileLogLevel": "warn",
+  "fileLogLevel": "error",
   "logFilePath": "scan.log",
-  "statisticLoggingInterval": 30000,
+  "statisticLoggingInterval": 120000,
 
   "enableGreedyWorkerAllocation": false,
-  "enableParallelRequests": false,
+  "enableParallelRequests": true,
   "randomWorkerDelayFudgeFactor": 1000,
   "randomGlobalScanDelayFudgeFactor": 300,
-  "spawnScanDelay": 1000,
 
   "simulate": true,
-  "simulationTimestep": 50,
-  "simulationRequestDuration": 500,
+  "simulationTimeMultiplier": 50,
+  "simulationRequestDuration": 1500,
   "minutesSimulated": 300,
 
-  "googleMapsApiKey": "AHAAAAAA"
+  "plugins": {
+    "slackBot": {
+      "enabled": true,
+      "sendMessageOnInitialization": false,
+      "token": "xoob-fdat4tfsa-hw8vh8e7g",
+      "name": "clairvoyance",
+      "channel": "clairvoyance",
+      "subscriptions": [
+        3,
+        6,
+        9,
+        40,
+        103,
+        130,
+        131,
+        132,
+        143,
+        147,
+        148,
+        149
+      ]
+    }
+  }
 }
