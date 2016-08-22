@@ -11,6 +11,7 @@ import RequestQueue from './model/RequestQueue';
 import Utils from './Utils';
 import Config from './Config';
 import Constants from './Constants';
+import ResponseParser from "./ResponseParser";
 import Data from './Data';
 
 import Utils from 'Utils';
@@ -253,7 +254,12 @@ export class Clairvoyance {
 					return request.completedPromise.then((result) => {
 						worker.free();
 						worker.incrementScanCounter();
-						log.verbose(`request on worker ${worker.id} completed: ${result}`);
+
+						let pokemon = ResponseParser.parsePokemon(result);
+						pokemon.forEach((pkmn:Pokemon) => {
+							log.info(`Found Pokemon ${pkmn.toString()}`);
+						});
+
 						this.spawnsProcessed++;
 						this.spawnsScannedSuccessfully++;
 					})

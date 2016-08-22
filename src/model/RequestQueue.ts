@@ -5,227 +5,228 @@ import Constants from '../Constants';
 import Config from '../Config';
 import Utils from '../Utils';
 import Spawnpoint from "./Spawnpoint";
+import FakeData from "../FakeData";
 
 const log:any = Utils.getLogger('RequestQueue');
 
 export default class ScanRequestQueue {
 
-    isProcessing:boolean;
-    queue:Array<ScanRequest>;
-    lastRequestTime:Date;
-    processingPromise:Promise;
-    backOffFactor:number;
-    totalRequestsProcessed:number;
-    totalRequestsDropped:number;
+	isProcessing:boolean;
+	queue:Array<ScanRequest>;
+	lastRequestTime:Date;
+	processingPromise:Promise;
+	backOffFactor:number;
+	totalRequestsProcessed:number;
+	totalRequestsDropped:number;
 
-    constructor() {
-        this.queue = [];
-        this.lastRequestTime = new Date();
-        this.isProcessing = false;
-        this.totalRequestsProcessed = 0;
-        this.totalRequestsDropped = 0;
-    }
+	constructor() {
+		this.queue = [];
+		this.lastRequestTime = new Date();
+		this.isProcessing = false;
+		this.totalRequestsProcessed = 0;
+		this.totalRequestsDropped = 0;
+	}
 
-    backOff() {
-        this.backOffFactor++;
-    }
+	backOff() {
+		this.backOffFactor++;
+	}
 
-    addWorkerScanRequest(worker, spawnpoint):ScanRequest {
+	addWorkerScanRequest(worker, spawnpoint):ScanRequest {
 
-        let request = new ScanRequest({
-            spawnpoint: spawnpoint,
-            worker: worker,
-            scheduledTime: new Date()
-        });
+		let request = new ScanRequest({
+			spawnpoint: spawnpoint,
+			worker: worker,
+			scheduledTime: new Date()
+		});
 
-        if (this.queue.length >= Config.maximumRequestQueueLength) {
-            this.totalRequestsDropped++;
-            let errorMessage = `exceeded maximum request queue size; dropping request`;
-            //log.error(errorMessage);
-            setTimeout(() => {
-                request.setProcessed(errorMessage);
-            }, 0);
-            return request;
-        }
+		if (this.queue.length >= Config.maximumRequestQueueLength) {
+			this.totalRequestsDropped++;
+			let errorMessage = `exceeded maximum request queue size; dropping request`;
+			//log.error(errorMessage);
+			setTimeout(() => {
+				request.setProcessed(errorMessage);
+			}, 0);
+			return request;
+		}
 
-        this.queue.unshift(request);
+		this.queue.unshift(request);
 
-        if (!this.isProcessing) {
-            this.isProcessing = true;
-            setTimeout(() => {
-                this.startProcessing();
-            }, 0);
-        }
+		if (!this.isProcessing) {
+			this.isProcessing = true;
+			setTimeout(() => {
+				this.startProcessing();
+			}, 0);
+		}
 
-        return request;
-    }
+		return request;
+	}
 
-    startProcessing():Promise {
-        this.isProcessing = true;
-        this.processingPromise = this.process(this.queue.pop());
-        return this.processingPromise;
-    }
+	startProcessing():Promise {
+		this.isProcessing = true;
+		this.processingPromise = this.process(this.queue.pop());
+		return this.processingPromise;
+	}
 
-    process(request) {
+	process(request) {
 
-        log.debug(`processing new request on worker ${request.worker.id}`);
+		log.debug(`processing new request on worker ${request.worker.id}`);
 
-        return new Promise(
-            (resolve, reject) => {
-                //Delay to respect global scan delay
-                let extraDelay = Utils.getRandomInt(0, Config.randomGlobalScanDelayFuzzFactor);
-                let totalDelayTime = (Config.globalScanDelayMs + extraDelay);
-                log.debug(`waiting ${totalDelayTime} until next request is processed`);
-                setTimeout(() => {
-                    resolve();
-                }, Utils.timestepTransformDown(totalDelayTime));
-            })
-            .then(() => {
-                if (Config.enableParallelRequests === true) {
-                    this.executeScanRequest(request);
-                    return Promise.resolve();
-                }
-                else {
-                    return this.executeScanRequest(request);
-                }
-            })
-            .then(() => {
-                this.backOffFactor--;
-                if (this.backOffFactor < 0) {
-                    this.backOffFactor = 0;
-                }
-                let nextRequest = this.queue.pop();
-                if (nextRequest) {
-                    return this.process(nextRequest);
-                }
-                else {
-                    this.isProcessing = false;
-                    return 'scan queue emptied';
-                }
-            })
-            .catch((err) => {
-                this.backOff();
-                log.warn(`error while handling scan request: ${err}`);
-                let nextRequest = this.queue.pop();
-                if (nextRequest) {
-                    return this.process(nextRequest);
-                }
-                else {
-                    return 'all scan requests processed';
-                }
-            });
-    }
+		return new Promise(
+			(resolve, reject) => {
+				//Delay to respect global scan delay
+				let extraDelay = Utils.getRandomInt(0, Config.randomGlobalScanDelayFuzzFactor);
+				let totalDelayTime = (Config.globalScanDelayMs + extraDelay);
+				log.debug(`waiting ${totalDelayTime} until next request is processed`);
+				setTimeout(() => {
+					resolve();
+				}, Utils.timestepTransformDown(totalDelayTime));
+			})
+			.then(() => {
+				if (Config.enableParallelRequests === true) {
+					this.executeScanRequest(request);
+					return Promise.resolve();
+				}
+				else {
+					return this.executeScanRequest(request);
+				}
+			})
+			.then(() => {
+				this.backOffFactor--;
+				if (this.backOffFactor < 0) {
+					this.backOffFactor = 0;
+				}
+				let nextRequest = this.queue.pop();
+				if (nextRequest) {
+					return this.process(nextRequest);
+				}
+				else {
+					this.isProcessing = false;
+					return 'scan queue emptied';
+				}
+			})
+			.catch((err) => {
+				this.backOff();
+				log.warn(`error while handling scan request: ${err}`);
+				let nextRequest = this.queue.pop();
+				if (nextRequest) {
+					return this.process(nextRequest);
+				}
+				else {
+					return 'all scan requests processed';
+				}
+			});
+	}
 
-    executeScanRequest(request:ScanRequest):Promise {
-        return new Promise((resolve, reject) => {
-            request.setProcessed();
-            this.totalRequestsProcessed++;
+	executeScanRequest(request:ScanRequest):Promise {
+		return new Promise((resolve, reject) => {
+			request.setProcessed();
+			this.totalRequestsProcessed++;
 
-            let worker = request.worker;
+			let worker = request.worker;
 
-            if (Config.simulate) {
-                setTimeout(() => {
-                    let result = `fake completion on worker id ${worker.id}`;
-                    request.setCompleted(result);
-                    resolve(result);
-                }, Utils.timestepTransformDown(Config.simulationRequestDuration));
-            }
-            else {
-                //TODO
-                setTimeout(() => {
-                    let result = `fake completion on worker id ${worker.id}`;
-                    request.setCompleted(result);
-                    resolve(result);
-                }, Utils.timestepTransformDown(Config.simulationRequestDuration));
-            }
+			if (Config.simulate) {
+				setTimeout(() => {
+					let result = FakeData.getFakePogobufMapResponseWithSpawn(request.spawnpoint.id, request.spawnpoint.lat, request.spawnpoint.long);
+					request.setCompleted(result);
+					resolve(result);
+				}, Utils.timestepTransformDown(Config.simulationRequestDuration));
+			}
+			else {
+				//TODO
+				setTimeout(() => {
+					let result = FakeData.getFakePogobufMapResponseWithSpawn(request.spawnpoint.id, request.spawnpoint.lat, request.spawnpoint.long);
+					request.setCompleted(result);
+					resolve(result);
+				}, Utils.timestepTransformDown(Config.simulationRequestDuration));
+			}
 
-        });
-    }
+		});
+	}
 }
 
 export class ScanRequest {
 
-    worker:Worker;
-    scheduledTime:Date;
-    spawnpoint:Spawnpoint;
+	worker:Worker;
+	scheduledTime:Date;
+	spawnpoint:Spawnpoint;
 
-    processedTime:Date;
-    completedTime:Date;
+	processedTime:Date;
+	completedTime:Date;
 
-    processedPromise:Promise;
-    completedPromise:Promise;
+	processedPromise:Promise;
+	completedPromise:Promise;
 
-    processedPromiseResolver:Function;
-    processedPromiseRejecter:Function;
-    completedPromiseResolver:Function;
-    completedPromiseRejecter:Function;
+	processedPromiseResolver:Function;
+	processedPromiseRejecter:Function;
+	completedPromiseResolver:Function;
+	completedPromiseRejecter:Function;
 
-    result;
+	result;
 
-    constructor(params) {
-        this.worker = params.worker;
-        this.spawnpoint = params.spawnpoint;
-        this.scheduledTime = params.scheduledTime;
+	constructor(params) {
+		this.worker = params.worker;
+		this.spawnpoint = params.spawnpoint;
+		this.scheduledTime = params.scheduledTime;
 
-        this.processedPromise = new Promise((resolve, reject) => {
-            this.processedPromiseResolver = resolve;
-            this.processedPromiseRejecter = reject;
-        });
+		this.processedPromise = new Promise((resolve, reject) => {
+			this.processedPromiseResolver = resolve;
+			this.processedPromiseRejecter = reject;
+		});
 
-        this.completedPromise = new Promise((resolve, reject) => {
-            this.completedPromiseResolver = resolve;
-            this.completedPromiseRejecter = reject;
-        });
-    }
+		this.completedPromise = new Promise((resolve, reject) => {
+			this.completedPromiseResolver = resolve;
+			this.completedPromiseRejecter = reject;
+		});
+	}
 
-    isProcessed():Boolean {
-        return !!this.processedTime;
-    }
+	isProcessed():Boolean {
+		return !!this.processedTime;
+	}
 
-    isCompleted():Boolean {
-        return !!this.completedTime;
-    }
+	isCompleted():Boolean {
+		return !!this.completedTime;
+	}
 
-    getCompletedPromise():Promise<any> {
-        return this.completedPromise;
-    }
+	getCompletedPromise():Promise<any> {
+		return this.completedPromise;
+	}
 
-    getCompletedPromise():Promise<Date> {
-        return this.completedPromise;
-    }
+	getCompletedPromise():Promise<Date> {
+		return this.completedPromise;
+	}
 
-    getResult():any {
-        return this.result;
-    }
+	getResult():any {
+		return this.result;
+	}
 
-    setProcessed(err?:String) {
-        if (!this.processedTime) {
-            this.processedTime = new Date();
+	setProcessed(err?:String) {
+		if (!this.processedTime) {
+			this.processedTime = new Date();
 
-            if (err) {
-                setTimeout(() => {
-                    this.setCompleted(err, null);
-                }, 0);
-                return this.processedPromiseRejecter(err);
-            }
-            else {
-                return this.processedPromiseResolver(this.processedTime);
-            }
-        }
-    }
+			if (err) {
+				setTimeout(() => {
+					this.setCompleted(err, null);
+				}, 0);
+				return this.processedPromiseRejecter(err);
+			}
+			else {
+				return this.processedPromiseResolver(this.processedTime);
+			}
+		}
+	}
 
-    setCompleted(result:any, err?:String) {
-        if (!this.completedTime) {
-            this.completedTime = new Date();
-            this.result = result;
+	setCompleted(result:any, err?:String) {
+		if (!this.completedTime) {
+			this.completedTime = new Date();
+			this.result = result;
 
-            if (err) {
-                this.result = err;
-                return this.completedPromiseRejecter(err);
-            }
-            else {
-                return this.completedPromiseResolver(this.result);
-            }
-        }
-    }
+			if (err) {
+				this.result = err;
+				return this.completedPromiseRejecter(err);
+			}
+			else {
+				return this.completedPromiseResolver(this.result);
+			}
+		}
+	}
 }
