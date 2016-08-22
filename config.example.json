@@ -38,7 +38,7 @@
 
   "plugins": {
     "slackBot": {
-      "enabled": true,
+      "enabled": false,
       "sendMessageOnInitialization": false,
       "token": "xoob-fdat4tfsa-hw8vh8e7g",
       "name": "clairvoyance",
