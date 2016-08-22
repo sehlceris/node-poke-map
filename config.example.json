@@ -10,6 +10,12 @@
   "scanRadiusMeters": 99500,
   "googleMapsApiKey": "AHAAAAADASDb_hf734gh",
 
+  "mongoDbUsername": "clairvoyance",
+  "mongoDbPassword": "clairvoyance",
+  "mongoDbHost": "localhost",
+  "mongoDbPort": 27017,
+  "mongoDbDatabaseName": "clairvoyance",
+
   "consoleLogLevel": "info",
   "fileLogLevel": "error",
   "logFilePath": "scan.log",
