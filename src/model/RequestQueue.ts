@@ -73,7 +73,7 @@ export default class ScanRequestQueue {
         return new Promise(
             (resolve, reject) => {
                 //Delay to respect global scan delay
-                let extraDelay = Utils.getRandomInt(0, Config.randomGlobalScanDelayFudgeFactor);
+                let extraDelay = Utils.getRandomInt(0, Config.randomGlobalScanDelayFuzzFactor);
                 let totalDelayTime = (Config.globalScanDelayMs + extraDelay);
                 log.debug(`waiting ${totalDelayTime} until next request is processed`);
                 setTimeout(() => {

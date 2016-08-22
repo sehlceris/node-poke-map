@@ -41,7 +41,7 @@ export default class Worker {
         this.totalMovements = 0;
         this.totalScans = 0;
 
-        this.currentRandomExtraDelay = Utils.getRandomInt(0, Config.randomWorkerDelayFudgeFactor);
+        this.currentRandomExtraDelay = Utils.getRandomInt(0, Config.randomWorkerDelayFuzzFactor);
     }
 
     hasBeenUsedAtLeastOnceDuringProgramExecution():boolean {
@@ -134,7 +134,7 @@ export default class Worker {
     free():void {
         this.isFreeBool = true;
         this.lastTimeFreed = new Date();
-        this.currentRandomExtraDelay = Utils.timestepTransformDown(Utils.getRandomInt(0, Config.randomWorkerDelayFudgeFactor));
+        this.currentRandomExtraDelay = Utils.timestepTransformDown(Utils.getRandomInt(0, Config.randomWorkerDelayFuzzFactor));
         log.debug(`worker ${this.id} freed`);
     }
 

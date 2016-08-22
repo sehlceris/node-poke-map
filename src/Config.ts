@@ -17,8 +17,13 @@ export interface Config {
     //End user probably should not touch
     enableGreedyWorkerAllocation:boolean; // will use all provided workers equally instead of trying to maximize each worker's usage
     enableParallelRequests:boolean; // if false, will wait for previous scan request to finish before allowing start of next. probably best to set it to true unless you want to throttle this way
-    randomWorkerDelayFudgeFactor:number; // random worker delay added to the regular scan delay. between 0 and this number, in milliseconds
-    randomGlobalScanDelayFudgeFactor:number; // random global scan delay added to the regular scan delay. between 0 and this number, in milliseconds
+    randomWorkerDelayFuzzFactor:number; // random worker delay added to the regular scan delay. between 0 and this number, in milliseconds
+    randomGlobalScanDelayFuzzFactor:number; // random global scan delay added to the regular scan delay. between 0 and this number, in milliseconds
+    randomLatFuzzFactor:number; // random latitude fuzz. between 0 and this number
+    randomLongFuzzFactor:number; // random longitude fuzz. between 0 and this number
+    randomElevationFuzzFactor:number; // random elevation fuzz. between 0 and this number
+    latLongDecimalPlaces:number; // how many decimal places remain at the end of lat/longs when submitting to the server
+    elevDecimalPlaces:number; // how many decimal places remain at the end of elevations when submitting to the server
 
     //Logging, statistics, and debugging
     consoleLogLevel:String; // 'debug', 'verbose', 'info', 'warn', 'error'

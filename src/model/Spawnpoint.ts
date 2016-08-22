@@ -11,6 +11,7 @@ const log:any = Utils.getLogger('Spawnpoint');
 export default class Spawnpoint {
     lat:number;
     long:number;
+    elev:number;
     cell:number;
     id:number;
     time:number;
@@ -21,6 +22,7 @@ export default class Spawnpoint {
     constructor(params) {
         this.lat = params.lat;
         this.long = params.lng;
+        this.elev = params.elev;
         this.cell = params.cell;
         this.id = params.sid;
         this.time = params.time;

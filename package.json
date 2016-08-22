@@ -17,8 +17,9 @@
     "grunt-tslint": "^3.2.0",
     "moment": "^2.14.1",
     "node-int64": "^0.4.0",
-    "pogobuf": "^1.5.2",
+    "pogobuf": "^1.6.0",
     "slackbots": "^0.5.2",
+    "tslint": "^3.15.0",
     "winston": "^2.2.0"
   },
   "devDependencies": {
