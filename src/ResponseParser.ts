@@ -18,7 +18,6 @@ export default class ResponseParser {
         let pokes = wilds.map((wild) => {
             let encounterIdInt64 = new Int64(wild.encounter_id.high, wild.encounter_id.low);
             let encounterIdOctetString = encounterIdInt64.toOctetString();
-            log.info(`encounter id: ${encounterIdOctetString}`);
 
             let lastModifiedTimestampMsInt64 = new Int64(wild.last_modified_timestamp_ms.high, wild.last_modified_timestamp_ms.low);
 
@@ -32,19 +31,19 @@ export default class ResponseParser {
                 disappearTimeMs = lastModifiedTimestampMsInt64 + 900000;
             }
             let disappearTime = moment(disappearTimeMs);
-            log.info(`disappear time: ${disappearTime} | ${disappearTimeMs}`);
 
             let pkmnData = {
                 encounterId: encounterIdOctetString,
                 spawnpointId: wild.spawn_point_id,
                 number: wild.pokemon_data.pokemon_id,
+                disappearTimeMs: disappearTimeMs,
                 disappearTime: disappearTime,
                 lat: wild.latitude,
                 long: wild.longitude,
                 lastModifiedTime: wild.last_modified_timestamp_ms,
                 timeUntilHidden: wild.time_till_hidden_ms
             };
-            log.info(JSON.stringify(pkmnData));
+            log.debug(JSON.stringify(pkmnData));
 
             let pkmn = new Pokemon(pkmnData);
 
