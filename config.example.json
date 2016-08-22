@@ -17,8 +17,13 @@
 
   "enableGreedyWorkerAllocation": false,
   "enableParallelRequests": true,
-  "randomWorkerDelayFudgeFactor": 1000,
-  "randomGlobalScanDelayFudgeFactor": 300,
+  "randomWorkerDelayFuzzFactor": 1000,
+  "randomGlobalScanDelayFuzzFactor": 300,
+  "randomLatFuzzFactor": 0.00005,
+  "randomLongFuzzFactor": 0.00005,
+  "randomElevationFuzzFactor": 3,
+  "latLongDecimalPlaces": 6,
+  "elevDecimalPlaces": 2,
 
   "simulate": true,
   "simulationTimeMultiplier": 50,
