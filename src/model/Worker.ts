@@ -146,17 +146,11 @@ export default class Worker {
                     }
                     else {
                         //TODO
-                        setTimeout(() => {
-                            let roll = Utils.getRandomFloat(0, 1);
-                            if (roll < Config.workerScanFailureProbability) {
-                                this.handleScanFailure();
-                                return reject('randomly failed to scan');
-                            }
-                            let result = FakeData.getFakePogobufMapResponseWithSpawn(spawnpoint.id, spawnpoint.lat, spawnpoint.long);
-                            this.handleScanSuccess();
-                            this.incrementScanCounter();
-                            return resolve(result);
-                        }, Utils.timestepTransformDown(Config.simulationRequestDuration));
+                        let cellIds = pogobuf.Utils.getCellIDs(this.currentLat, this.currentLong, 1);
+                        this.client.getMapObjects(cellIds, Array(cellIds.length).fill(0))
+                            .then((mapObjects) => {
+                                return mapObjects.map_cells[0];
+                            });
                     }
                 });
             })
@@ -225,6 +219,9 @@ export default class Worker {
         this.currentElev = elev;
         this.lastTimeMoved = new Date();
         this.totalMovements++;
+
+        this.client.setPosition(this.currentLat, this.currentLong, this.currentElev);
+
         log.debug(`worker ${this.id} moved to ${lat}, ${long}`);
     }
 

@@ -1,4 +1,4 @@
-import Mongo = require('mongodb');
+let Mongo = require('mongodb');
 let MongoClient = Mongo.MongoClient;
 import bluebird = require('bluebird');
 import Constants from './Constants';
