@@ -24,11 +24,14 @@ export interface Config {
     //Express
     restPort:number;
 
+    //Health Checking
+    healthCheckInterval:number; //interval at which health checking is performed
+    globalMaximumBannedAccountsLimit:number; //maximum number of banned accounts detected before the program exits
+
     //End user probably should not touch
     workerConsecutiveLoginFailureLimit:number; //maximum number of consecutive failed worker login attempts before worker is removed from pool
     workerConsecutiveScanFailureLimit:number; //maximum number of consecutive failed worker scan attempts before worker is removed from pool
     workerReloginDelayMs:number; //time to wait before attempting to log worker in again
-    globalMaximumBannedAccountsLimit:number; //maximum number of banned accounts detected before the program exits
     enableGreedyWorkerAllocation:boolean; // will use all provided workers equally instead of trying to maximize each worker's usage
     enableParallelRequests:boolean; // if false, will wait for previous scan request to finish before allowing start of next. probably best to set it to true unless you want to throttle this way
     randomWorkerLoginFuzzFactor:number; // random delay until the worker is allowed to log in.

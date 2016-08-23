@@ -28,6 +28,7 @@ export class Clairvoyance {
     requestQueue:RequestQueue;
     workerPool:WorkerPool;
     pluginManager:PluginManager;
+    healthCheckInterval:number;
     spawnCount:number;
     spawnsProcessed:number;
     spawnsScannedSuccessfully:number;
@@ -69,6 +70,21 @@ export class Clairvoyance {
         log.info(`initialized with ${this.spawnpoints.length} spawnpoints and ${this.workerPool.workers.length} workers`);
 
         this.initStatisticLogging();
+        this.startHealthCheckInterval();
+    }
+
+    startHealthCheckInterval() {
+        this.healthCheckInterval = setInterval(() => {
+            let allocatedWorkers = this.workerPool.getAllocatedWorkers();
+            let workersBanned = allocatedWorkers.filter((worker) => {
+                return worker.isBanned();
+            }).length;
+
+            if (workersBanned > Config.globalMaximumBannedAccountsLimit) {
+                log.error(`too many banned accounts (${workersBanned}) detected. exiting application`);
+                process.exit(1);
+            }
+        }, Utils.timestepTransformDown(Config.healthCheckInterval));
     }
 
     initSpawnPoints():void {
