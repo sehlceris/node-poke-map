@@ -21,6 +21,9 @@ export interface Config {
 	mongoDbPort:number;
 	mongoDbDatabaseName:string;
 
+	//Express
+	restPort:number;
+
 	//End user probably should not touch
 	enableGreedyWorkerAllocation:boolean; // will use all provided workers equally instead of trying to maximize each worker's usage
 	enableParallelRequests:boolean; // if false, will wait for previous scan request to finish before allowing start of next. probably best to set it to true unless you want to throttle this way

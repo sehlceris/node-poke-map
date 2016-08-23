@@ -13,6 +13,7 @@ import Config from './Config';
 import Constants from './Constants';
 import DatabaseAdapter from "./DatabaseAdapter";
 import ResponseParser from "./ResponseParser";
+import RestHandler from "./RestHandler";
 import Data from './Data';
 
 import Utils from 'Utils';
@@ -55,6 +56,15 @@ export class Clairvoyance {
 		this.initWorkers();
 		this.requestQueue = new RequestQueue();
 		this.pluginManager = new PluginManager();
+
+		RestHandler.startListening()
+			.then((result) => {
+				log.info(`REST listening on port ${Config.restPort}`);
+			})
+			.catch((err) => {
+				log.error(`failed to listen for REST on port ${Config.restPort}: ${err}`);
+				log.error('exiting application');
+			});
 
 		log.info(`initialized with ${this.spawnpoints.length} spawnpoints and ${this.workerPool.workers.length} workers`);
 

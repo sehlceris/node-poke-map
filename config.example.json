@@ -16,6 +16,8 @@
   "mongoDbPort": 27017,
   "mongoDbDatabaseName": "clairvoyance",
 
+  "restPort": 5000,
+
   "consoleLogLevel": "info",
   "fileLogLevel": "error",
   "logFilePath": "scan.log",
