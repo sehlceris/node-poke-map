@@ -1,4 +1,4 @@
-let Mongo = require('mongodb');
+import Mongo = require('mongodb');
 let MongoClient = Mongo.MongoClient;
 import bluebird = require('bluebird');
 import Constants from './Constants';
@@ -48,7 +48,7 @@ export class DatabaseAdapter {
 	}
 
 	getActivePokemon():Promise {
-		return dbConnectionPromise
+		return this.dbConnectionPromise
 			.then((db) => {
 				return db.collection(POKEMON_COLLECTION_NAME).find({
 					disappearTime: {
