@@ -103,7 +103,7 @@ export default class Worker {
         return loginPromise.then((res) => {
             this.consecutiveLoginFailures = 0;
             this.isWaitingUntilReloginBool = false;
-            log.info(`worker ${this.id}:'${this.username}' logged in successfully`);
+            log.debug(`worker ${this.id}:'${this.username}' logged in successfully`);
             return res;
         })
             .catch((err) => {
@@ -114,7 +114,7 @@ export default class Worker {
                     this.isBannedBool = true;
                 }
                 else {
-                    log.warn(`worker ${this.id}:'${this.username}' failed to log in - will try again`);
+                    log.debug(`worker ${this.id}:'${this.username}' failed to log in - will try again`);
                     this.isLoggedInBool = false;
                     this.isWaitingUntilReloginBool = true;
                     setTimeout(() => {
@@ -171,7 +171,7 @@ export default class Worker {
             this.isBannedBool = true;
         }
         else {
-            log.warn(`worker ${this.id}:'${this.username}' failed to scan - will try to log in again`);
+            log.debug(`worker ${this.id}:'${this.username}' failed to scan - will try to log in again`);
             this.isLoggedInBool = false;
             this.isWaitingUntilReloginBool = true;
             setTimeout(() => {
