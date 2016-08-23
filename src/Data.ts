@@ -59,4 +59,11 @@ export default class Data {
         }
         return spawns;
     }
+
+    static getSpawnsWithElevation() {
+        if (!spawns) {
+            spawns = JSON.parse((fs.readFileSync(Constants.SPAWNS_WITH_ELEVATIONS_JSON_PATH)));
+        }
+        return spawns;
+    }
 }

@@ -88,8 +88,8 @@ export default class Utils {
 
         transformedLat = parseFloat(transformedLat.toFixed(Config.latLongDecimalPlaces));
         transformedLong = parseFloat(transformedLong.toFixed(Config.latLongDecimalPlaces));
-        transformedElev = parseFloat(transformedElev.toFixed(Config.latLongDecimalPlaces));
-        
+        transformedElev = parseFloat(transformedElev.toFixed(Config.elevDecimalPlaces));
+
         return {
             lat: transformedLat,
             long: transformedLong,

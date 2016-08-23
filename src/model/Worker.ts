@@ -214,15 +214,23 @@ export default class Worker {
             this.totalMetersMoved += meters;
         }
 
-        this.currentLat = lat;
-        this.currentLong = long;
-        this.currentElev = elev;
+        let fuzzedCoords = Utils.fuzzGPSCoordinates({
+            lat: lat,
+            long: long,
+            elev: elev,
+        });
+
+        this.currentLat = fuzzedCoords.lat;
+        this.currentLong = fuzzedCoords.long;
+        this.currentElev = fuzzedCoords.elev;
         this.lastTimeMoved = new Date();
         this.totalMovements++;
 
-        this.client.setPosition(this.currentLat, this.currentLong, this.currentElev);
+        if (!Config.simulate) {
+            this.client.setPosition(this.currentLat, this.currentLong, this.currentElev);
+        }
 
-        log.debug(`worker ${this.id} moved to ${lat}, ${long}`);
+        log.info(`worker ${this.id} moved to ${this.currentLat}, ${this.currentLong} | ${this.currentElev}`);
     }
 
     canMoveTo(lat, long):Boolean {

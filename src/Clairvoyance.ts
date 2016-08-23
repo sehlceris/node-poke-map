@@ -77,7 +77,7 @@ export class Clairvoyance {
             return;
         }
 
-        let spawns = Data.getSpawns();
+        let spawns = Data.getSpawnsWithElevation();
 
         log.info(`Scan center: ${Config.scanCenterLat}, ${Config.scanCenterLong}`);
 
