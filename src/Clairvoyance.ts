@@ -129,6 +129,9 @@ export class Clairvoyance {
             let allocatedWorkers = this.workerPool.getAllocatedWorkers();
 
             let workersUsed = allocatedWorkers.length;
+            let workersBanned = allocatedWorkers.filter((worker) => {
+                return worker.isBanned();
+            }).length;
             let workerAllocationFailures = this.workerPool.workerAllocationFailures;
             let workerAllocationFailuresPerMinuteStr = (workerAllocationFailures / minutesRunning).toFixed(2);
 
@@ -211,7 +214,7 @@ export class Clairvoyance {
             scan center: ${Config.scanCenterLat}, ${Config.scanCenterLong}; scan radius: ${Config.scanRadiusMeters} meters; spawnpoint count: ${this.spawnpoints.length}
             global scan delay: ${Config.globalScanDelayMs}; worker scan delay: ${Config.workerScanDelayMs} ms
             
-            workers allocated: ${workersUsed}/${this.workerPool.workers.length}
+            workers allocated: ${workersUsed}/${this.workerPool.workers.length} ${workersBanned ? '(' + workersBanned + ' banned)' : ''}
             worker allocation failures: ${workerAllocationFailures}
             average worker allocation failures per minute: ${workerAllocationFailuresPerMinuteStr}
             max worker travel speed: ${Config.workerMaximumMovementSpeedMetersPerSecond} m/s
@@ -260,25 +263,22 @@ export class Clairvoyance {
             }
 
             worker.reserve();
-            worker.moveTo(spawnpoint.lat, spawnpoint.long);
             log.verbose(`spawnpoint ${spawnpoint.id} spawned, sending worker ${worker.id}`);
 
             let request = this.requestQueue.addWorkerScanRequest(worker, spawnpoint);
-            request.processedPromise
+            request.completedPromise
                 .then((result) => {
-                    log.verbose(`request on worker ${worker.id} processed`);
-                    return request.completedPromise.then((result) => {
-                        worker.free();
-                        worker.incrementScanCounter();
+                    log.verbose(`request on worker ${worker.id} completed`);
+                    worker.free();
+                    worker.incrementScanCounter();
 
-                        let pokemon = ResponseParser.parsePokemon(result);
-                        pokemon.forEach((pkmn:Pokemon) => {
-                            DatabaseAdapter.upsertPokemon(pkmn);
-                        });
+                    let pokemon = ResponseParser.parsePokemon(result);
+                    pokemon.forEach((pkmn:Pokemon) => {
+                        DatabaseAdapter.upsertPokemon(pkmn);
+                    });
 
-                        this.spawnsProcessed++;
-                        this.spawnsScannedSuccessfully++;
-                    })
+                    this.spawnsProcessed++;
+                    this.spawnsScannedSuccessfully++;
                 })
                 .catch((err) => {
                     worker.free();

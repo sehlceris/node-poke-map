@@ -25,8 +25,13 @@ export interface Config {
     restPort:number;
 
     //End user probably should not touch
+    workerConsecutiveLoginFailureLimit:number; //maximum number of consecutive failed worker login attempts before worker is removed from pool
+    workerConsecutiveScanFailureLimit:number; //maximum number of consecutive failed worker scan attempts before worker is removed from pool
+    workerReloginDelayMs:number; //time to wait before attempting to log worker in again
+    globalMaximumBannedAccountsLimit:number; //maximum number of banned accounts detected before the program exits
     enableGreedyWorkerAllocation:boolean; // will use all provided workers equally instead of trying to maximize each worker's usage
     enableParallelRequests:boolean; // if false, will wait for previous scan request to finish before allowing start of next. probably best to set it to true unless you want to throttle this way
+    randomWorkerLoginFuzzFactor:number; // random delay until the worker is allowed to log in.
     randomWorkerDelayFuzzFactor:number; // random worker delay added to the regular scan delay. between 0 and this number, in milliseconds
     randomGlobalScanDelayFuzzFactor:number; // random global scan delay added to the regular scan delay. between 0 and this number, in milliseconds
     randomLatFuzzFactor:number; // random latitude fuzz. between 0 and this number
@@ -45,6 +50,8 @@ export interface Config {
     simulate:boolean; // if true, requests will NOT be made to the API and instead a simulation will occur. useful for determining proper settings for workers/scan delay
     simulationTimeMultiplier:number; // while simulating, the program speed will be multiplied by this number. '5' will run the scans/spawns 5 times faster than real life. if set too high, will not be accurate and may screw up your computer
     simulationRequestDuration:number; // how long do you think the servers will take to respond, in milliseconds?
+    workerLoginFailureProbability:number; // probability of simulated worker failing to log in
+    workerScanFailureProbability:number; // probability of simulated worker failing to scan
     minutesSimulated:number; // how many minutes of runtime do you want to simulate?
 
     //Bits (set by the program)
