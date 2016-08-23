@@ -13,7 +13,7 @@ import Config from './Config';
 import Constants from './Constants';
 import DatabaseAdapter from "./DatabaseAdapter";
 import ResponseParser from "./ResponseParser";
-import RestHandler from "./RestHandler";
+import RestHandler from "./RequestHandler";
 import Data from './Data';
 
 import Utils from 'Utils';

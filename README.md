@@ -32,4 +32,10 @@ db.Pokemon.ensureIndex({
 db.SimulatedPokemon.ensureIndex({
    "disappearTime": 1
 })
+db.Pokemon.ensureIndex({
+    "disappearTimeMs": 1
+})
+db.SimulatedPokemon.ensureIndex({
+   "disappearTimeMs": 1
+})
 ```

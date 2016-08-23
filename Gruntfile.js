@@ -12,7 +12,7 @@ module.exports = function (grunt) {
                 script: `${Config.BUILD_DIRECTORY}/Clairvoyance.js`
             },
             options: {
-                ignore: ['node_modules/**', 'Gruntfile.js', 'test']
+                ignore: ['node_modules/**', 'Gruntfile.js', 'test', 'www', 'sampledata', 'data']
             }
         },
         watch: {
