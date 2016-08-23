@@ -1,4 +1,3 @@
-let moment = require('moment');
 let Int64 = require('node-int64')
 import fs = require('fs');
 import bluebird = require('bluebird');
@@ -15,7 +14,7 @@ export default class ResponseParser {
 		let wilds = pogobufMapResponse.wild_pokemons;
 		let pokes = wilds.map((wild) => {
 			let encounterIdInt64 = new Int64(wild.encounter_id.high, wild.encounter_id.low);
-			let encounterIdOctetString = encounterIdInt64.toOctetString();
+			let encounterIdOctetString:String = encounterIdInt64.toOctetString();
 
 			let lastModifiedTimestampMsInt64 = new Int64(wild.last_modified_timestamp_ms.high, wild.last_modified_timestamp_ms.low);
 
@@ -28,7 +27,7 @@ export default class ResponseParser {
 			else {
 				disappearTimeMs = lastModifiedTimestampMsInt64 + 900000;
 			}
-			let disappearTime = moment(disappearTimeMs);
+			let disappearTime = new Date(disappearTimeMs);
 
 			let pkmnData = {
 				encounterId: encounterIdOctetString,

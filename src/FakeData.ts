@@ -32,7 +32,7 @@ export default class TestData {
 
 		pkmn.latitude = lat;
 		pkmn.longitude = lat;
-		pkmn.spawn_point_id = lat;
+		pkmn.spawn_point_id = spawnpointId;
 		pkmn.pokemon_data.pokemon_id = Utils.getRandomInt(1, 150);
 
 		pkmn.encounter_id = {

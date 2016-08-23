@@ -11,6 +11,7 @@ import RequestQueue from './model/RequestQueue';
 import Utils from './Utils';
 import Config from './Config';
 import Constants from './Constants';
+import DatabaseAdapter from "./DatabaseAdapter";
 import ResponseParser from "./ResponseParser";
 import Data from './Data';
 
@@ -257,7 +258,7 @@ export class Clairvoyance {
 
 						let pokemon = ResponseParser.parsePokemon(result);
 						pokemon.forEach((pkmn:Pokemon) => {
-							log.info(`Found Pokemon ${pkmn.toString()}`);
+							DatabaseAdapter.upsertPokemon(pkmn);
 						});
 
 						this.spawnsProcessed++;

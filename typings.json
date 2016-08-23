@@ -9,6 +9,7 @@
     "winston": "registry:dt/winston#0.0.0+20160417152829"
   },
   "dependencies": {
-    "bluebird": "registry:npm/bluebird#3.3.4+20160802085254"
+    "bluebird": "registry:npm/bluebird#3.3.4+20160802085254",
+    "mongodb": "registry:npm/mongodb#2.1.0+20160721204323"
   }
 }

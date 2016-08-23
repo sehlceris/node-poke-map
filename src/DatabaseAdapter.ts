@@ -8,13 +8,15 @@ import Pokemon from "model/Pokemon";
 
 const log:any = Utils.getLogger('DatabaseAdapter');
 
+const POKEMON_COLLECTION_NAME = 'Pokemon';
+
 let username = Config.mongoDbUsername;
 let password = Config.mongoDbPassword;
 let host = Config.mongoDbHost;
 let port = Config.mongoDbPort;
 let databaseName = Config.mongoDbDatabaseName;
 
-let url = `mongodb://${username}:${password}@${host}:${port}/?authMechanism=DEFAULT&authSource=${databaseName}`;
+let url = `mongodb://${username}:${password}@${host}:${port}/${databaseName}?authMechanism=DEFAULT&authSource=${databaseName}`;
 
 log.info(`Connecting to MongoDB: ${host}:${port}/${databaseName}`);
 let dbConnectionPromise = new Promise((resolve, reject) => {
@@ -43,15 +45,35 @@ export default class DatabaseAdapter {
 
 	static getActivePokemon():Promise {
 		return dbConnectionPromise
-			.then(() => {
-
+			.then((db) => {
+				return db.collection(POKEMON_COLLECTION_NAME).find({
+					disappearTime: {
+						$gte: new Date()
+					}
+				});
 			});
 	}
 
 	static upsertPokemon(pkmn:Pokemon):Promise {
 		return dbConnectionPromise
-			.then(() => {
-
-			});
+			.then((db) => {
+				log.debug(`upserting ${pkmn.toString()}`);
+				return db.collection(POKEMON_COLLECTION_NAME).updateOne({
+					$and: [
+						{spawnpointId: pkmn.spawnpointId},
+						{encounterId: pkmn.encounterId},
+					]
+				}, {
+					$set: pkmn.toObject()
+				}, {
+					upsert: true
+				});
+			})
+			.then((result) => {
+				log.debug(`successfully upserted ${result}`);
+			})
+			.catch((err) => {
+				log.error(`error upserting pokemon: ${err}`);
+			})
 	}
 }
