@@ -15,71 +15,78 @@ const POKEMON_COLLECTION_NAME = Config.simulate ? SIMULATED_POKEMON_COLLECTION_N
 
 export class DatabaseAdapter {
 
-	dbConnectionPromise:Promise<any>;
+    dbConnectionPromise:Promise<any>;
 
-	constructor() {
+    constructor() {
 
-		let username = Config.mongoDbUsername;
-		let password = Config.mongoDbPassword;
-		let host = Config.mongoDbHost;
-		let port = Config.mongoDbPort;
-		let databaseName = Config.mongoDbDatabaseName;
+        let username = Config.mongoDbUsername;
+        let password = Config.mongoDbPassword;
+        let host = Config.mongoDbHost;
+        let port = Config.mongoDbPort;
+        let databaseName = Config.mongoDbDatabaseName;
 
-		let url = `mongodb://${username}:${password}@${host}:${port}/${databaseName}?authMechanism=DEFAULT&authSource=${databaseName}`;
+        let url = `mongodb://${username}:${password}@${host}:${port}/${databaseName}?authMechanism=DEFAULT&authSource=${databaseName}`;
 
-		log.info(`Connecting to MongoDB: ${host}:${port}/${databaseName}`);
-		this.dbConnectionPromise = new Promise((resolve, reject) => {
-			MongoClient.connect(url, (err, db) => {
-				if (err) {
-					return reject(err);
-				}
-				return resolve(db);
-			});
-		});
+        log.info(`Connecting to MongoDB: ${host}:${port}/${databaseName}`);
+        this.dbConnectionPromise = new Promise((resolve, reject) => {
+            MongoClient.connect(url, (err, db) => {
+                if (err) {
+                    return reject(err);
+                }
+                return resolve(db);
+            });
+        });
 
-		this.dbConnectionPromise
-			.then((db) => {
-				log.info(`connected to MongoDB`);
-			})
-			.catch((err) => {
-				log.error(`Failed to connect to DB: ${err}. Exiting application.`);
-				process.exit(1);
-			});
-	}
+        this.dbConnectionPromise
+            .then((db) => {
+                log.info(`connected to MongoDB`);
+            })
+            .catch((err) => {
+                log.error(`Failed to connect to DB: ${err}. Exiting application.`);
+                process.exit(1);
+            });
+    }
 
-	getActivePokemon():Promise {
-		return this.dbConnectionPromise
-			.then((db) => {
-				return db.collection(POKEMON_COLLECTION_NAME).find({
-					disappearTime: {
-						$gte: new Date()
-					}
-				}).toArray();
-			});
-	}
+    getActivePokemon():Promise {
+        let startQueryTime = new Date();
+        return this.dbConnectionPromise
+            .then((db) => {
+                return db.collection(POKEMON_COLLECTION_NAME).find({
+                    disappearTime: {
+                        $gte: new Date()
+                    }
+                }).toArray();
+            })
+            .then((results) => {
+                let endQueryTime = new Date();
+                let queryTime = endQueryTime.getTime() - startQueryTime.getTime();
+                log.debug(`active pokemon database query time: ${queryTime}`);
+                return results;
+            });
+    }
 
-	upsertPokemon(pkmn:Pokemon):Promise {
-		return this.dbConnectionPromise
-			.then((db) => {
-				log.debug(`upserting ${pkmn.toString()}`);
-				return db.collection(POKEMON_COLLECTION_NAME).updateOne({
-					$and: [
-						{spawnpointId: pkmn.spawnpointId},
-						{encounterId: pkmn.encounterId},
-					]
-				}, {
-					$set: pkmn.toObject()
-				}, {
-					upsert: true
-				});
-			})
-			.then((result) => {
-				log.debug(`successfully upserted ${result}`);
-			})
-			.catch((err) => {
-				log.error(`error upserting pokemon: ${err}`);
-			})
-	}
+    upsertPokemon(pkmn:Pokemon):Promise {
+        return this.dbConnectionPromise
+            .then((db) => {
+                log.debug(`upserting ${pkmn.toString()}`);
+                return db.collection(POKEMON_COLLECTION_NAME).updateOne({
+                    $and: [
+                        {spawnpointId: pkmn.spawnpointId},
+                        {encounterId: pkmn.encounterId},
+                    ]
+                }, {
+                    $set: pkmn.toObject()
+                }, {
+                    upsert: true
+                });
+            })
+            .then((result) => {
+                log.debug(`successfully upserted ${result}`);
+            })
+            .catch((err) => {
+                log.error(`error upserting pokemon: ${err}`);
+            })
+    }
 }
 
 let adapterInstance = new DatabaseAdapter();

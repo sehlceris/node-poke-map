@@ -18,7 +18,8 @@ export class RestHandler {
         this.app = express();
 
         this.app.get('/raw_data', this.handlePogoMapRawDataRequest.bind(this));
-        this.app.get('/search_control', this.handlePogoMapSearchControlRequest.bind(this));
+        this.app.get('/search_control', this.handlePogoMapSearchControlGetRequest.bind(this));
+        this.app.post('/search_control', this.handlePogoMapSearchControlPostRequest.bind(this));
     }
 
     startListening():Promise {
@@ -38,8 +39,20 @@ export class RestHandler {
         });
     }
 
-    handlePogoMapSearchControlRequest(req, res) {
-        res.json({"status": true});
+    handlePogoMapSearchControlGetRequest(req, res) {
+        res.json({"status": (!Config.pauseScanning)});
+    }
+
+    handlePogoMapSearchControlPostRequest(req, res) {
+        if (req.query.action === 'off') {
+            Config.pauseScanning = true;
+            log.info('scanning paused');
+        }
+        else if (req.query.action === 'on') {
+            Config.pauseScanning = false;
+            log.info('scanning started');
+        }
+        res.json(!!Config.pauseScanning);
     }
 
     handlePogoMapRawDataRequest(req, res) {
@@ -50,8 +63,17 @@ export class RestHandler {
                 response.scanned = [];
                 response.pokestops = [];
                 response.pokemons = results.map((pkmnData:PokemonData) => {
+
+                    let disappearTime = pkmnData.disappearTimeMs;
+                    if (Config.simulate) {
+                        let now = new Date().getTime();
+                        let diff = disappearTime - now;
+                        diff = Utils.timestepTransformDown(diff);
+                        disappearTime = now + diff;
+                    }
+
                     return {
-                        "disappear_time": pkmnData.disappearTimeMs,
+                        "disappear_time": disappearTime,
                         "encounter_id": pkmnData.encounterId,
                         "latitude": pkmnData.lat,
                         "longitude": pkmnData.long,

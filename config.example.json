@@ -34,7 +34,7 @@
   "elevDecimalPlaces": 2,
 
   "simulate": true,
-  "simulationTimeMultiplier": 50,
+  "simulationTimeMultiplier": 20,
   "simulationRequestDuration": 1500,
   "minutesSimulated": 300,
 

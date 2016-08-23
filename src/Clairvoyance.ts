@@ -24,187 +24,187 @@ let instance = null;
 
 export class Clairvoyance {
 
-	spawnpoints:Array<Spawnpoint>;
-	requestQueue:RequestQueue;
-	workerPool:WorkerPool;
-	pluginManager:PluginManager;
-	spawnCount:number;
-	spawnsProcessed:number;
-	spawnsScannedSuccessfully:number;
+    spawnpoints:Array<Spawnpoint>;
+    requestQueue:RequestQueue;
+    workerPool:WorkerPool;
+    pluginManager:PluginManager;
+    spawnCount:number;
+    spawnsProcessed:number;
+    spawnsScannedSuccessfully:number;
 
-	initTime:Date;
+    initTime:Date;
 
-	static getInstance():Clairvoyance {
-		if (!instance) {
-			instance = new Clairvoyance();
-		}
-		return instance;
-	}
+    static getInstance():Clairvoyance {
+        if (!instance) {
+            instance = new Clairvoyance();
+        }
+        return instance;
+    }
 
-	constructor() {
+    constructor() {
 
-		log.info(`**********************************************`);
-		log.info(`CLAIRVOYANCE POKEMON GO SCANNER`);
-		if (Config.simulate) {
-			log.warn(`running in simulation mode with timestep ${Config.simulationTimeMultiplier}`);
-		}
+        log.info(`**********************************************`);
+        log.info(`CLAIRVOYANCE POKEMON GO SCANNER`);
+        if (Config.simulate) {
+            log.warn(`running in simulation mode with timestep ${Config.simulationTimeMultiplier}`);
+        }
 
-		this.spawnCount = 0;
-		this.spawnsProcessed = 0;
-		this.spawnsScannedSuccessfully = 0;
-		this.initSpawnPoints();
-		this.initWorkers();
-		this.requestQueue = new RequestQueue();
-		this.pluginManager = new PluginManager();
+        this.spawnCount = 0;
+        this.spawnsProcessed = 0;
+        this.spawnsScannedSuccessfully = 0;
+        this.initSpawnPoints();
+        this.initWorkers();
+        this.requestQueue = new RequestQueue();
+        this.pluginManager = new PluginManager();
 
-		RestHandler.startListening()
-			.then((result) => {
-				log.info(`REST listening on port ${Config.restPort}`);
-			})
-			.catch((err) => {
-				log.error(`failed to listen for REST on port ${Config.restPort}: ${err}`);
-				log.error('exiting application');
-			});
+        RestHandler.startListening()
+            .then((result) => {
+                log.info(`REST listening on port ${Config.restPort}`);
+            })
+            .catch((err) => {
+                log.error(`failed to listen for REST on port ${Config.restPort}: ${err}`);
+                log.error('exiting application');
+            });
 
-		log.info(`initialized with ${this.spawnpoints.length} spawnpoints and ${this.workerPool.workers.length} workers`);
+        log.info(`initialized with ${this.spawnpoints.length} spawnpoints and ${this.workerPool.workers.length} workers`);
 
-		this.initStatisticLogging();
-	}
+        this.initStatisticLogging();
+    }
 
-	initSpawnPoints():void {
+    initSpawnPoints():void {
 
-		if (this.spawnpoints) {
-			return;
-		}
+        if (this.spawnpoints) {
+            return;
+        }
 
-		let spawns = Data.getSpawns();
+        let spawns = Data.getSpawns();
 
-		log.info(`Scan center: ${Config.scanCenterLat}, ${Config.scanCenterLong}`);
+        log.info(`Scan center: ${Config.scanCenterLat}, ${Config.scanCenterLong}`);
 
-		let filteredSpawnPoints = spawns.filter((spawn) => {
-			let result = geolib.isPointInCircle({
-				latitude: Config.scanCenterLat,
-				longitude: Config.scanCenterLong
-			}, {
-				latitude: spawn.lat,
-				longitude: spawn.lng,
-			}, Config.scanRadiusMeters);
-			return result;
-		});
+        let filteredSpawnPoints = spawns.filter((spawn) => {
+            let result = geolib.isPointInCircle({
+                latitude: Config.scanCenterLat,
+                longitude: Config.scanCenterLong
+            }, {
+                latitude: spawn.lat,
+                longitude: spawn.lng,
+            }, Config.scanRadiusMeters);
+            return result;
+        });
 
-		this.spawnpoints = filteredSpawnPoints.map((spawn) => {
-			return new Spawnpoint(spawn);
-		});
+        this.spawnpoints = filteredSpawnPoints.map((spawn) => {
+            return new Spawnpoint(spawn);
+        });
 
-		this.spawnpoints.forEach((spawnpoint:Spawnpoint) => {
-			spawnpoint.setSpawnListener(this.handleSpawn.bind(this));
-			spawnpoint.startSpawnTimer();
-		});
-	}
+        this.spawnpoints.forEach((spawnpoint:Spawnpoint) => {
+            spawnpoint.setSpawnListener(this.handleSpawn.bind(this));
+            spawnpoint.startSpawnTimer();
+        });
+    }
 
-	initWorkers():void {
-		if (this.workerPool) {
-			return;
-		}
+    initWorkers():void {
+        if (this.workerPool) {
+            return;
+        }
 
-		let workerLogins = Data.getWorkers();
-		let workers = workerLogins.map((workerLogin) => {
-			return new Worker(workerLogin);
-		});
+        let workerLogins = Data.getWorkers();
+        let workers = workerLogins.map((workerLogin) => {
+            return new Worker(workerLogin);
+        });
 
-		this.workerPool = new WorkerPool(workers);
-	}
+        this.workerPool = new WorkerPool(workers);
+    }
 
-	initStatisticLogging():void {
+    initStatisticLogging():void {
 
-		this.initTime = new Date();
+        this.initTime = new Date();
 
-		if (Config.statisticLoggingInterval < 1000) {
-			return;
-		}
+        if (Config.statisticLoggingInterval < 1000) {
+            return;
+        }
 
-		setInterval(() => {
-			let minutesRunning = Math.round(((Utils.timestepTransformUp(new Date() - this.initTime) / 1000) / 60) * 10) / 10;
+        setInterval(() => {
+            let minutesRunning = Math.round(((Utils.timestepTransformUp(new Date() - this.initTime) / 1000) / 60) * 10) / 10;
 
-			let allocatedWorkers = this.workerPool.getAllocatedWorkers();
+            let allocatedWorkers = this.workerPool.getAllocatedWorkers();
 
-			let workersUsed = allocatedWorkers.length;
-			let workerAllocationFailures = this.workerPool.workerAllocationFailures;
-			let workerAllocationFailuresPerMinuteStr = (workerAllocationFailures / minutesRunning).toFixed(2);
+            let workersUsed = allocatedWorkers.length;
+            let workerAllocationFailures = this.workerPool.workerAllocationFailures;
+            let workerAllocationFailuresPerMinuteStr = (workerAllocationFailures / minutesRunning).toFixed(2);
 
-			let totalWorkerDistanceMoved = 0;
-			let highestWorkerDistanceMoved = 0;
-			let highestWorkerSpeedId = -1;
-			let lowestWorkerDistanceMoved = Infinity;
-			let lowestWorkerSpeedId = -1;
-			let totalWorkerMovements = 0;
-			let highestWorkerMovements = 0;
-			let highestWorkerMovementsId = 0;
-			let lowestWorkerMovements = Infinity;
-			let lowestWorkerMovementsId = -1;
-			let totalWorkerScans = 0;
-			let highestWorkerScans = 0;
-			let highestWorkerScansId = 0;
-			let lowestWorkerScans = Infinity;
-			let lowestWorkerScansId = -1;
-			allocatedWorkers.forEach((worker) => {
-				totalWorkerDistanceMoved += worker.totalMetersMoved;
-				totalWorkerMovements += worker.totalMovements;
-				totalWorkerScans += worker.totalScans;
-				if (worker.totalMetersMoved > highestWorkerDistanceMoved) {
-					highestWorkerDistanceMoved = worker.totalMetersMoved;
-					highestWorkerSpeedId = worker.id;
-				}
-				if (worker.totalMetersMoved > 0 && worker.totalMetersMoved < lowestWorkerDistanceMoved) {
-					lowestWorkerDistanceMoved = worker.totalMetersMoved;
-					lowestWorkerSpeedId = worker.id;
-				}
+            let totalWorkerDistanceMoved = 0;
+            let highestWorkerDistanceMoved = 0;
+            let highestWorkerSpeedId = -1;
+            let lowestWorkerDistanceMoved = Infinity;
+            let lowestWorkerSpeedId = -1;
+            let totalWorkerMovements = 0;
+            let highestWorkerMovements = 0;
+            let highestWorkerMovementsId = 0;
+            let lowestWorkerMovements = Infinity;
+            let lowestWorkerMovementsId = -1;
+            let totalWorkerScans = 0;
+            let highestWorkerScans = 0;
+            let highestWorkerScansId = 0;
+            let lowestWorkerScans = Infinity;
+            let lowestWorkerScansId = -1;
+            allocatedWorkers.forEach((worker) => {
+                totalWorkerDistanceMoved += worker.totalMetersMoved;
+                totalWorkerMovements += worker.totalMovements;
+                totalWorkerScans += worker.totalScans;
+                if (worker.totalMetersMoved > highestWorkerDistanceMoved) {
+                    highestWorkerDistanceMoved = worker.totalMetersMoved;
+                    highestWorkerSpeedId = worker.id;
+                }
+                if (worker.totalMetersMoved > 0 && worker.totalMetersMoved < lowestWorkerDistanceMoved) {
+                    lowestWorkerDistanceMoved = worker.totalMetersMoved;
+                    lowestWorkerSpeedId = worker.id;
+                }
 
-				if (worker.totalScans > highestWorkerScans) {
-					highestWorkerScans = worker.totalScans;
-					highestWorkerScansId = worker.id;
-				}
-				if (worker.totalScans > 0 && worker.totalScans < lowestWorkerScans) {
-					lowestWorkerScans = worker.totalScans;
-					lowestWorkerScansId = worker.id;
-				}
+                if (worker.totalScans > highestWorkerScans) {
+                    highestWorkerScans = worker.totalScans;
+                    highestWorkerScansId = worker.id;
+                }
+                if (worker.totalScans > 0 && worker.totalScans < lowestWorkerScans) {
+                    lowestWorkerScans = worker.totalScans;
+                    lowestWorkerScansId = worker.id;
+                }
 
-				if (worker.totalMovements > highestWorkerMovements) {
-					highestWorkerMovements = worker.totalMovements;
-					highestWorkerMovementsId = worker.id;
-				}
-				if (worker.totalMovements > 0 && worker.totalMovements < lowestWorkerMovements) {
-					lowestWorkerMovements = worker.totalMovements;
-					lowestWorkerMovementsId = worker.id;
-				}
-			});
+                if (worker.totalMovements > highestWorkerMovements) {
+                    highestWorkerMovements = worker.totalMovements;
+                    highestWorkerMovementsId = worker.id;
+                }
+                if (worker.totalMovements > 0 && worker.totalMovements < lowestWorkerMovements) {
+                    lowestWorkerMovements = worker.totalMovements;
+                    lowestWorkerMovementsId = worker.id;
+                }
+            });
 
-			let averageWorkerMetersMoved = (totalWorkerDistanceMoved / allocatedWorkers.length);
-			let averageWorkerSpeed = ((averageWorkerMetersMoved / minutesRunning) / 60).toFixed(2);
-			let highestWorkerSpeed = ((highestWorkerDistanceMoved / minutesRunning) / 60).toFixed(2);
-			let lowestWorkerSpeed = ((lowestWorkerDistanceMoved / minutesRunning) / 60).toFixed(2);
+            let averageWorkerMetersMoved = (totalWorkerDistanceMoved / allocatedWorkers.length);
+            let averageWorkerSpeed = ((averageWorkerMetersMoved / minutesRunning) / 60).toFixed(2);
+            let highestWorkerSpeed = ((highestWorkerDistanceMoved / minutesRunning) / 60).toFixed(2);
+            let lowestWorkerSpeed = ((lowestWorkerDistanceMoved / minutesRunning) / 60).toFixed(2);
 
-			let averageWorkerScans = (totalWorkerScans / allocatedWorkers.length);
-			let averageWorkerScansPerMinute = ((averageWorkerScans / minutesRunning)).toFixed(2);
-			let highestWorkerScansPerMinute = ((highestWorkerScans / minutesRunning)).toFixed(2);
-			let lowestWorkerScansPerMinute = ((lowestWorkerScans / minutesRunning)).toFixed(2);
+            let averageWorkerScans = (totalWorkerScans / allocatedWorkers.length);
+            let averageWorkerScansPerMinute = ((averageWorkerScans / minutesRunning)).toFixed(2);
+            let highestWorkerScansPerMinute = ((highestWorkerScans / minutesRunning)).toFixed(2);
+            let lowestWorkerScansPerMinute = ((lowestWorkerScans / minutesRunning)).toFixed(2);
 
-			let averageWorkerMovements = (totalWorkerMovements / allocatedWorkers.length);
-			let averageWorkerMovementsPerMinute = ((averageWorkerMovements / minutesRunning)).toFixed(2);
-			let highestWorkerMovementsPerMinute = ((highestWorkerMovements / minutesRunning)).toFixed(2);
-			let lowestWorkerMovementsPerMinute = ((lowestWorkerMovements / minutesRunning)).toFixed(2);
+            let averageWorkerMovements = (totalWorkerMovements / allocatedWorkers.length);
+            let averageWorkerMovementsPerMinute = ((averageWorkerMovements / minutesRunning)).toFixed(2);
+            let highestWorkerMovementsPerMinute = ((highestWorkerMovements / minutesRunning)).toFixed(2);
+            let lowestWorkerMovementsPerMinute = ((lowestWorkerMovements / minutesRunning)).toFixed(2);
 
-			let requestQueueLength = this.requestQueue.queue.length;
-			let totalRequestsProcessed = this.requestQueue.totalRequestsProcessed;
-			let averageRequestsProcessedPerMinuteStr = (totalRequestsProcessed / minutesRunning).toFixed(2);
-			let totalRequestsDropped = this.requestQueue.totalRequestsDropped;
-			let averageRequestsDroppedPerMinuteStr = (totalRequestsDropped / minutesRunning).toFixed(2);
+            let requestQueueLength = this.requestQueue.queue.length;
+            let totalRequestsProcessed = this.requestQueue.totalRequestsProcessed;
+            let averageRequestsProcessedPerMinuteStr = (totalRequestsProcessed / minutesRunning).toFixed(2);
+            let totalRequestsDropped = this.requestQueue.totalRequestsDropped;
+            let averageRequestsDroppedPerMinuteStr = (totalRequestsDropped / minutesRunning).toFixed(2);
 
-			let averageSpawnsPerMinuteStr = (this.spawnCount / minutesRunning).toFixed(1);
-			let spawnScanPercentageStr = ((this.spawnsScannedSuccessfully / this.spawnsProcessed) * 100).toFixed(1);
-			let spawnMissedPercentageStr = (100 - parseFloat(spawnScanPercentageStr)).toFixed(1);
+            let averageSpawnsPerMinuteStr = (this.spawnCount / minutesRunning).toFixed(1);
+            let spawnScanPercentageStr = ((this.spawnsScannedSuccessfully / this.spawnsProcessed) * 100).toFixed(1);
+            let spawnMissedPercentageStr = (100 - parseFloat(spawnScanPercentageStr)).toFixed(1);
 
-			log.info(`
+            log.info(`
             ********************************
             Stats ${Config.simulate ? 'WARNING: SIMULATION ONLY MODE WITH TIME MULTIPLIER ' + Config.simulationTimeMultiplier + ' AND REQUEST DURATION ' + Config.simulationRequestDuration : ''}
             time running: ${minutesRunning} minutes
@@ -233,55 +233,60 @@ export class Clairvoyance {
             ********************************
             `);
 
-			if (Config.simulate && minutesRunning > Config.minutesSimulated) {
-				log.info(`simulation complete, exiting application`);
-				process.exit(0);
-			}
+            if (Config.simulate && minutesRunning > Config.minutesSimulated) {
+                log.info(`simulation complete, exiting application`);
+                process.exit(0);
+            }
 
-		}, Utils.timestepTransformDown(Config.statisticLoggingInterval));
-	}
+        }, Utils.timestepTransformDown(Config.statisticLoggingInterval));
+    }
 
-	handleSpawn(spawnpoint:Spawnpoint) {
-		this.spawnCount++;
+    handleSpawn(spawnpoint:Spawnpoint) {
 
-		setTimeout(() => {
+        if (true === Config.pauseScanning) {
+            return;
+        }
 
-			let worker = this.workerPool.getWorkerThatCanWalkTo(spawnpoint.lat, spawnpoint.long);
+        this.spawnCount++;
 
-			if (!worker) {
-				log.warn(`no worker available to handle spawnpoint ${spawnpoint.id}, skipping this spawn`);
-				this.spawnsProcessed++;
-				return;
-			}
+        setTimeout(() => {
 
-			worker.reserve();
-			worker.moveTo(spawnpoint.lat, spawnpoint.long);
-			log.verbose(`spawnpoint ${spawnpoint.id} spawned, sending worker ${worker.id}`);
+            let worker = this.workerPool.getWorkerThatCanWalkTo(spawnpoint.lat, spawnpoint.long);
 
-			let request = this.requestQueue.addWorkerScanRequest(worker, spawnpoint);
-			request.processedPromise
-				.then((result) => {
-					log.verbose(`request on worker ${worker.id} processed`);
-					return request.completedPromise.then((result) => {
-						worker.free();
-						worker.incrementScanCounter();
+            if (!worker) {
+                log.warn(`no worker available to handle spawnpoint ${spawnpoint.id}, skipping this spawn`);
+                this.spawnsProcessed++;
+                return;
+            }
 
-						let pokemon = ResponseParser.parsePokemon(result);
-						pokemon.forEach((pkmn:Pokemon) => {
-							DatabaseAdapter.upsertPokemon(pkmn);
-						});
+            worker.reserve();
+            worker.moveTo(spawnpoint.lat, spawnpoint.long);
+            log.verbose(`spawnpoint ${spawnpoint.id} spawned, sending worker ${worker.id}`);
 
-						this.spawnsProcessed++;
-						this.spawnsScannedSuccessfully++;
-					})
-				})
-				.catch((err) => {
-					worker.free();
-					log.warn(`failed to process scan for worker ${worker.id} on spawnpoint ${spawnpoint.id}: ${err}`);
-					this.spawnsProcessed++;
-				});
-		}, Utils.timestepTransformDown(Config.spawnScanDelay));
-	}
+            let request = this.requestQueue.addWorkerScanRequest(worker, spawnpoint);
+            request.processedPromise
+                .then((result) => {
+                    log.verbose(`request on worker ${worker.id} processed`);
+                    return request.completedPromise.then((result) => {
+                        worker.free();
+                        worker.incrementScanCounter();
+
+                        let pokemon = ResponseParser.parsePokemon(result);
+                        pokemon.forEach((pkmn:Pokemon) => {
+                            DatabaseAdapter.upsertPokemon(pkmn);
+                        });
+
+                        this.spawnsProcessed++;
+                        this.spawnsScannedSuccessfully++;
+                    })
+                })
+                .catch((err) => {
+                    worker.free();
+                    log.warn(`failed to process scan for worker ${worker.id} on spawnpoint ${spawnpoint.id}: ${err}`);
+                    this.spawnsProcessed++;
+                });
+        }, Utils.timestepTransformDown(Config.spawnScanDelay));
+    }
 }
 
 Clairvoyance.getInstance();
