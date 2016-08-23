@@ -13,40 +13,41 @@ const SIMULATED_POKEMON_COLLECTION_NAME = 'SimulatedPokemon';
 
 const POKEMON_COLLECTION_NAME = Config.simulate ? SIMULATED_POKEMON_COLLECTION_NAME : REAL_POKEMON_COLLECTION_NAME;
 
-let username = Config.mongoDbUsername;
-let password = Config.mongoDbPassword;
-let host = Config.mongoDbHost;
-let port = Config.mongoDbPort;
-let databaseName = Config.mongoDbDatabaseName;
+export class DatabaseAdapter {
 
-let url = `mongodb://${username}:${password}@${host}:${port}/${databaseName}?authMechanism=DEFAULT&authSource=${databaseName}`;
-
-log.info(`Connecting to MongoDB: ${host}:${port}/${databaseName}`);
-let dbConnectionPromise = new Promise((resolve, reject) => {
-	MongoClient.connect(url, (err, db) => {
-		if (err) {
-			return reject(err);
-		}
-		return resolve(db);
-	});
-});
-
-dbConnectionPromise
-	.then((db) => {
-		log.info(`connected to MongoDB`);
-	})
-	.catch((err) => {
-		log.error(`Failed to connect to DB: ${err}. Exiting application.`);
-		process.exit(1);
-	});
-
-export default class DatabaseAdapter {
+	dbConnectionPromise:Promise<any>;
 
 	constructor() {
 
+		let username = Config.mongoDbUsername;
+		let password = Config.mongoDbPassword;
+		let host = Config.mongoDbHost;
+		let port = Config.mongoDbPort;
+		let databaseName = Config.mongoDbDatabaseName;
+
+		let url = `mongodb://${username}:${password}@${host}:${port}/${databaseName}?authMechanism=DEFAULT&authSource=${databaseName}`;
+
+		log.info(`Connecting to MongoDB: ${host}:${port}/${databaseName}`);
+		this.dbConnectionPromise = new Promise((resolve, reject) => {
+			MongoClient.connect(url, (err, db) => {
+				if (err) {
+					return reject(err);
+				}
+				return resolve(db);
+			});
+		});
+
+		this.dbConnectionPromise
+			.then((db) => {
+				log.info(`connected to MongoDB`);
+			})
+			.catch((err) => {
+				log.error(`Failed to connect to DB: ${err}. Exiting application.`);
+				process.exit(1);
+			});
 	}
 
-	static getActivePokemon():Promise {
+	getActivePokemon():Promise {
 		return dbConnectionPromise
 			.then((db) => {
 				return db.collection(POKEMON_COLLECTION_NAME).find({
@@ -57,8 +58,8 @@ export default class DatabaseAdapter {
 			});
 	}
 
-	static upsertPokemon(pkmn:Pokemon):Promise {
-		return dbConnectionPromise
+	upsertPokemon(pkmn:Pokemon):Promise {
+		return this.dbConnectionPromise
 			.then((db) => {
 				log.debug(`upserting ${pkmn.toString()}`);
 				return db.collection(POKEMON_COLLECTION_NAME).updateOne({
@@ -80,3 +81,6 @@ export default class DatabaseAdapter {
 			})
 	}
 }
+
+let adapterInstance = new DatabaseAdapter();
+export default adapterInstance;
