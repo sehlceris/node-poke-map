@@ -206,7 +206,7 @@ export class Clairvoyance {
 
             log.info(`
             ********************************
-            Stats ${Config.simulate ? '(simulation mode: timestep ' + Config.simulationTimeMultiplier + ')' : ''}
+            Stats ${Config.simulate ? '(simulation mode: time multiplier ' + Config.simulationTimeMultiplier + ')' : ''}
             time running: ${minutesRunning} minutes ${Config.pauseScanning ? '(scanning currently paused)' : ''}
             scan center: ${Config.scanCenterLat}, ${Config.scanCenterLong}; scan radius: ${Config.scanRadiusMeters} meters; spawnpoint count: ${this.spawnpoints.length}
             global scan delay: ${Config.globalScanDelayMs}; worker scan delay: ${Config.workerScanDelayMs} ms
