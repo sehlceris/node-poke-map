@@ -102,6 +102,7 @@ export default class Worker {
 
         return loginPromise.then((res) => {
             this.consecutiveLoginFailures = 0;
+            this.isLoggedInBool = true;
             this.isWaitingUntilReloginBool = false;
             log.debug(`worker ${this.id}:'${this.username}' logged in successfully`);
             return res;
