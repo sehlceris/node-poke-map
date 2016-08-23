@@ -230,7 +230,7 @@ export default class Worker {
             this.client.setPosition(this.currentLat, this.currentLong, this.currentElev);
         }
 
-        log.info(`worker ${this.id} moved to ${this.currentLat}, ${this.currentLong} | ${this.currentElev}`);
+        log.debug(`worker ${this.id} moved to ${this.currentLat}, ${this.currentLong} | ${this.currentElev}`);
     }
 
     canMoveTo(lat, long):Boolean {
