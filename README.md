@@ -24,4 +24,12 @@ db.createUser(
 	]
   }
 )
+
+# ensure index on your database so that Pokemon can be quickly found using their disappearTime
+db.Pokemon.ensureIndex({
+    "disappearTime": 1
+})
+db.SimulatedPokemon.ensureIndex({
+   "disappearTime": 1
+})
 ```
