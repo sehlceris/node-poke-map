@@ -8,7 +8,10 @@ import Pokemon from "model/Pokemon";
 
 const log:any = Utils.getLogger('DatabaseAdapter');
 
-const POKEMON_COLLECTION_NAME = 'Pokemon';
+const REAL_POKEMON_COLLECTION_NAME = 'Pokemon';
+const SIMULATED_POKEMON_COLLECTION_NAME = 'SimulatedPokemon';
+
+const POKEMON_COLLECTION_NAME = Config.simulate ? SIMULATED_POKEMON_COLLECTION_NAME : REAL_POKEMON_COLLECTION_NAME;
 
 let username = Config.mongoDbUsername;
 let password = Config.mongoDbPassword;
@@ -50,7 +53,7 @@ export default class DatabaseAdapter {
 					disappearTime: {
 						$gte: new Date()
 					}
-				});
+				}).toArray();
 			});
 	}
 
