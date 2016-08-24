@@ -67,7 +67,7 @@ export default class Worker {
             let loginDiff = Utils.timestepTransformUp(new Date() - this.lastLoggedInTime);
             let maxLoggedInTime = Config.workerMaximumLoggedInTime - this.randomMaximumLoggedInTimeFuzzFactor;
             if (loginDiff > maxLoggedInTime) {
-                log.info(`worker ${this.id}:${this.username} has been logged in for ${loginDiff} ms, logging in again`);
+                log.debug(`worker ${this.id}:${this.username} has been logged in for ${loginDiff} ms, logging in again`);
                 this.isLoggedInBool = false;
             }
         }
@@ -108,7 +108,7 @@ export default class Worker {
             });
         }
         else {
-            log.info(`logging in account ${this.username} with PTC...`);
+            log.debug(`logging in account ${this.username} with PTC...`);
             loginPromise = ptc.login(this.username, this.password).then((token) => {
                 this.client.setAuthInfo('ptc', token);
                 return this.client.init();
