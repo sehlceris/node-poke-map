@@ -293,6 +293,12 @@ export class Clairvoyance {
                     worker.incrementScanCounter();
 
                     let pokemon = ResponseParser.parsePokemon(result);
+
+                    if (!pokemon.length) {
+                        worker.handleScanFailure();
+                        throw new Error(`scan found no pokemon`);
+                    }
+
                     pokemon.forEach((pkmn:Pokemon) => {
                         DatabaseAdapter.upsertPokemon(pkmn);
                     });
