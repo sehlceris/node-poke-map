@@ -65,7 +65,9 @@ export default class Worker {
         else {
             if (true !== this.isWaitingUntilRelogin()) {
                 return new Promise((resolve, reject) => {
-                    setTimeout(resolve, Utils.getRandomInt(0, Utils.timestepTransformDown(Config.randomWorkerLoginFuzzFactor)));
+                    let waitTime = Utils.getRandomInt(0, Utils.timestepTransformDown(Config.randomWorkerLoginFuzzFactor));
+                    log.debug(`waiting ${waitTime} to log in worker ${this.id}:${this.username}`);
+                    setTimeout(resolve, waitTime);
                 })
                     .then(() => {
                         return this.refreshLogin();
@@ -104,7 +106,7 @@ export default class Worker {
             this.consecutiveLoginFailures = 0;
             this.isLoggedInBool = true;
             this.isWaitingUntilReloginBool = false;
-            log.debug(`worker ${this.id}:'${this.username}' logged in successfully`);
+            log.verbose(`worker ${this.id}:'${this.username}' logged in successfully`);
             return res;
         })
             .catch((err) => {
@@ -115,7 +117,7 @@ export default class Worker {
                     this.isBannedBool = true;
                 }
                 else {
-                    log.debug(`worker ${this.id}:'${this.username}' failed to log in - will try again`);
+                    log.verbose(`worker ${this.id}:'${this.username}' failed to log in - will try again`);
                     this.isLoggedInBool = false;
                     this.isWaitingUntilReloginBool = true;
                     setTimeout(() => {
@@ -166,7 +168,7 @@ export default class Worker {
             this.isBannedBool = true;
         }
         else {
-            log.debug(`worker ${this.id}:'${this.username}' failed to scan - will try to log in again`);
+            log.verbose(`worker ${this.id}:'${this.username}' failed to scan - will try to log in again`);
             this.isLoggedInBool = false;
             this.isWaitingUntilReloginBool = true;
             setTimeout(() => {

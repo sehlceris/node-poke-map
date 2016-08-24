@@ -32,10 +32,10 @@ export interface Config {
     //End user probably should not touch
     workerConsecutiveLoginFailureLimit:number; //maximum number of consecutive failed worker login attempts before worker is removed from pool
     workerConsecutiveScanFailureLimit:number; //maximum number of consecutive failed worker scan attempts before worker is removed from pool
-    workerReloginDelayMs:number; //time to wait before attempting to log worker in again
+    randomWorkerLoginFuzzFactor:number; // random delay until the worker is allowed to log in.
+    workerReloginDelayMs:number; //time to wait before attempting to log worker in again, if login fails
     enableGreedyWorkerAllocation:boolean; // will use all provided workers equally instead of trying to maximize each worker's usage
     enableParallelRequests:boolean; // if false, will wait for previous scan request to finish before allowing start of next. probably best to set it to true unless you want to throttle this way
-    randomWorkerLoginFuzzFactor:number; // random delay until the worker is allowed to log in.
     randomWorkerDelayFuzzFactor:number; // random worker delay added to the regular scan delay. between 0 and this number, in milliseconds
     randomGlobalScanDelayFuzzFactor:number; // random global scan delay added to the regular scan delay. between 0 and this number, in milliseconds
     randomLatFuzzFactor:number; // random latitude fuzz. between 0 and this number

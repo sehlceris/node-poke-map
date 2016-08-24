@@ -117,6 +117,9 @@ export default class ScanRequestQueue {
     }
 
     executeScanRequest(request:ScanRequest):Promise {
+        
+        log.debug(`executing scan request for spawnpoint ${request.spawnpoint.id} with worker ${request.worker.id}`);
+
         request.setProcessed();
         this.totalRequestsProcessed++;
 

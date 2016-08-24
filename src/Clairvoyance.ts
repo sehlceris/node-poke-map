@@ -276,7 +276,7 @@ export class Clairvoyance {
             let worker = this.workerPool.getWorkerThatCanWalkTo(spawnpoint.lat, spawnpoint.long);
 
             if (!worker) {
-                log.warn(`no worker available to handle spawnpoint ${spawnpoint.id}, skipping this spawn`);
+                log.verbose(`no worker available to handle spawnpoint ${spawnpoint.id}, skipping this spawn`);
                 this.spawnsProcessed++;
                 return;
             }
