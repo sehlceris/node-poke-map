@@ -27,6 +27,7 @@ export default class Worker {
     consecutiveScanFailures:number;
     isFreeBool:Boolean;
     isLoggedInBool:Boolean;
+    lastLoggedInTime:Date;
     isWaitingUntilReloginBool:Boolean;
     isBannedBool:Boolean;
     currentLat:number;
@@ -59,6 +60,17 @@ export default class Worker {
     }
 
     ensureLoggedIn():Promise {
+
+        //If worker has been logged in for too long, relogin
+        let loginDiff = Infinity;
+        if (this.lastLoggedInTime) {
+            loginDiff = Utils.timestepTransformDown(new Date() - this.lastLoggedInTime);
+        }
+        if (loginDiff > Config.workerMaximumLoggedInTime) {
+            log.info(`worker ${this.id}:${this.username} has been logged over ${Config.workerMaximumLoggedInTime}ms, logging in again`);
+            this.isLoggedInBool = false;
+        }
+
         if (this.isLoggedIn()) {
             return Promise.resolve();
         }

@@ -4,6 +4,7 @@
   "spawnScanDelay": 30000,
   "spawnpointLookbackMinutes": 1,
   "workerMaximumMovementSpeedMetersPerSecond": 25,
+  "workerMaximumLoggedInTime": 18000000,
   "maximumRequestQueueLength": 100,
   "scanCenterLat": 33.3333333,
   "scanCenterLong": -111.1111111,

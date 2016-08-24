@@ -8,6 +8,7 @@ export interface Config {
     spawnScanDelay:number; // delay between a spawn occurring and the scanner trying to pick it up
     spawnpointLookbackMinutes:number; // when starting up the scanner, should it scan points that occurred in the past? if so, how many minutes back?
     workerMaximumMovementSpeedMetersPerSecond:number; //maximum speed a worker may move in order to reach a spawn
+    workerMaximumLoggedInTime:number; //maximum amount of time a worker may be logged in before needing to relogin
     maximumRequestQueueLength:number; // maximum number of requests that can be queued before dropping
     scanCenterLat:number; // lat number describing scan center
     scanCenterLong:number; // long number describing scan center
