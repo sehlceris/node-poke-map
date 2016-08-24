@@ -12,6 +12,7 @@ export interface Config {
     scanCenterLat:number; // lat number describing scan center
     scanCenterLong:number; // long number describing scan center
     scanRadiusMeters:number; // radius of scan. spawnpoints outside this radius will not be scanned
+    maxAccounts:number; // app will not use more than this number of accounts, despite however many are available in the workers.json
     googleMapsApiKey:string; // your google maps API key
 
     //MongoDB

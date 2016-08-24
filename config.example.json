@@ -8,6 +8,7 @@
   "scanCenterLat": 99.99,
   "scanCenterLong": -99.99,
   "scanRadiusMeters": 805,
+  "maxAccounts": 5,
   "googleMapsApiKey": "AHAAAAADASDb_hf734gh",
 
   "mongoDbUsername": "clairvoyance",

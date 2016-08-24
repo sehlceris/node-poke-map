@@ -124,9 +124,12 @@ export class Clairvoyance {
         }
 
         let workerLogins = Data.getWorkers();
-        let workers = workerLogins.map((workerLogin) => {
-            return new Worker(workerLogin);
-        });
+
+        let workers = [];
+        for (var i = 0; i < Config.maxAccounts; i++) {
+            let workerLogin = workerLogins[i];
+            workers.push(new Worker(workerLogin));
+        }
 
         this.workerPool = new WorkerPool(workers);
     }
