@@ -4,15 +4,18 @@ import Application = express.Application;
 import bluebird = require('bluebird');
 import Constants from './Constants';
 import Config from './Config';
+import Data from './Data';
 import DatabaseAdapter from './DatabaseAdapter';
 import Utils from './Utils';
 import {PokemonData} from "./model/Pokemon";
 
-const log:any = Utils.getLogger('RestHandler');
+const log:any = Utils.getLogger('RequestHandler');
 
-export class RestHandler {
+export class RequestHandler {
 
     app:express.Application;
+    pogoMapGymData:any;
+    pogoMapStopData:any;
 
     constructor() {
         this.app = express();
@@ -59,9 +62,9 @@ export class RestHandler {
         DatabaseAdapter.getActivePokemon()
             .then((results) => {
                 let response = {};
-                response.gyms = [];
+                response.gyms = this.getPogoMapGyms();
                 response.scanned = [];
-                response.pokestops = [];
+                response.pokestops = this.getPogoMapStops();
                 response.pokemons = results.map((pkmnData:PokemonData) => {
 
                     let disappearTime = pkmnData.disappearTimeMs;
@@ -96,7 +99,43 @@ export class RestHandler {
                 });
             })
     }
+
+    getPogoMapGyms() {
+        if (typeof this.pogoMapGymData === 'undefined') {
+            this.pogoMapGymData = [];
+            let data = Data.getGyms();
+            this.pogoMapGymData = data.map((dat) => {
+                return {
+                    "enabled": true,
+                    "guard_pokemon_id": 144,
+                    "gym_id": dat.id,
+                    "gym_points": 1337,
+                    "last_modified": new Date(),
+                    "latitude": dat.lat,
+                    "longitude": dat.lng,
+                    "team_id": 1
+                };
+            });
+        }
+        return this.pogoMapGymData;
+    }
+
+    getPogoMapStops() {
+        if (typeof this.pogoMapStopData === 'undefined') {
+            this.pogoMapStopData = [];
+            let data = Data.getStops();
+            this.pogoMapStopData = data.map((dat) => {
+                return {
+                    "pokestop_id": dat.id,
+                    "lure_expiration": false,
+                    "latitude": dat.lat,
+                    "longitude": dat.lng,
+                };
+            });
+        }
+        return this.pogoMapStopData;
+    }
 }
 
-let instance = new RestHandler();
+let instance = new RequestHandler();
 export default instance;
