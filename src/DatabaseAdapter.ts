@@ -39,7 +39,7 @@ export class DatabaseAdapter {
 
         this.dbConnectionPromise
             .then((db) => {
-                log.info(`connected to MongoDB`);
+                log.info(`connected to MongoDB (using pokemon collection ${POKEMON_COLLECTION_NAME})`);
             })
             .catch((err) => {
                 log.error(`Failed to connect to DB: ${err}. Exiting application.`);
@@ -60,7 +60,7 @@ export class DatabaseAdapter {
             .then((results) => {
                 let endQueryTime = new Date();
                 let queryTime = endQueryTime.getTime() - startQueryTime.getTime();
-                log.debug(`active pokemon database query time: ${queryTime}`);
+                log.silly(`active pokemon database query time: ${queryTime}`);
                 return results;
             });
     }

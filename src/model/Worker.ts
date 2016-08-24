@@ -149,10 +149,15 @@ export default class Worker {
                     }
                     else {
                         //TODO
+                        log.debug(`executing scan at ${this.currentLat}, ${this.currentLong}`);
                         let cellIds = pogobuf.Utils.getCellIDs(this.currentLat, this.currentLong, 1);
                         this.client.getMapObjects(cellIds, Array(cellIds.length).fill(0))
                             .then((mapObjects) => {
                                 return mapObjects.map_cells[0];
+                            })
+                            .then(resolve)
+                            .catch((err) => {
+                                reject(err)
                             });
                     }
                 });

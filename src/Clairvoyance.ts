@@ -288,6 +288,7 @@ export class Clairvoyance {
             request.completedPromise
                 .then((result) => {
                     log.verbose(`request on worker ${worker.id} completed`);
+                    log.debug(JSON.stringify(result));
                     worker.free();
                     worker.incrementScanCounter();
 
