@@ -39,3 +39,11 @@ db.SimulatedPokemon.ensureIndex({
    "disappearTimeMs": 1
 })
 ```
+
+## Starting Up
+
+* Put TBTerra's spawnScan's output JSON in the `data` folder, with the same filenames as were output
+* Create `config.json` and `workers.json` (refer to the examples)
+* Run `grunt dist` to build the project
+* Run `node build/ElevationMapper.js` to inject elevations into your spawnpoint data (and output a new file)
+* Run `node build/Clairvoyance.js` to start the scanner
