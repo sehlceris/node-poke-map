@@ -110,7 +110,7 @@ export class RequestHandler {
                     "guard_pokemon_id": 144,
                     "gym_id": dat.id,
                     "gym_points": 1337,
-                    "last_modified": new Date(),
+                    "last_modified": new Date().getTime(),
                     "latitude": dat.lat,
                     "longitude": dat.lng,
                     "team_id": 1
