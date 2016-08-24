@@ -62,13 +62,12 @@ export default class Worker {
     ensureLoggedIn():Promise {
 
         //If worker has been logged in for too long, relogin
-        let loginDiff = Infinity;
         if (this.lastLoggedInTime) {
-            loginDiff = Utils.timestepTransformDown(new Date() - this.lastLoggedInTime);
-        }
-        if (loginDiff > Config.workerMaximumLoggedInTime) {
-            log.info(`worker ${this.id}:${this.username} has been logged over ${Config.workerMaximumLoggedInTime}ms, logging in again`);
-            this.isLoggedInBool = false;
+            let loginDiff = Utils.timestepTransformUp(new Date() - this.lastLoggedInTime);
+            if (loginDiff > Config.workerMaximumLoggedInTime) {
+                log.debug(`worker ${this.id}:${this.username} has been logged in for ${loginDiff} ms, logging in again`);
+                this.isLoggedInBool = false;
+            }
         }
 
         if (this.isLoggedIn()) {
@@ -118,6 +117,7 @@ export default class Worker {
             this.consecutiveLoginFailures = 0;
             this.isLoggedInBool = true;
             this.isWaitingUntilReloginBool = false;
+            this.lastLoggedInTime = new Date();
             log.verbose(`worker ${this.id}:'${this.username}' logged in successfully`);
             return res;
         })
