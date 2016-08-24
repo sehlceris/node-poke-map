@@ -45,7 +45,15 @@ export default class ResponseParser {
             // let disappearTime = new Date(disappearTimeMs);
 
             let encounterId = wild.encounter_id;
-            let timeTillHiddenMs = wild.time_till_hidden_ms;
+            let timeTillHiddenMs;
+            if (wild.time_till_hidden_ms > 0 && wild.time_till_hidden_ms < 3600000) {
+                // If time till hidden is less than 0 or greater than an hour, it's bugged and is wrong.
+                // However, it has been observed that Pokemon bugged like this will remain for at least 15 minutes - so we show it with a 15 minute despawn timer.
+                timeTillHiddenMs = wild.time_till_hidden_ms;
+            }
+            else {
+                timeTillHiddenMs = 900000;
+            }
             let disappearTimeMs = new Date().getTime() + timeTillHiddenMs;
             let disappearTime = new Date(disappearTimeMs);
 
