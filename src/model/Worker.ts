@@ -130,9 +130,9 @@ export default class Worker {
     }
 
     scan(spawnpoint:Spawnpoint):Promise {
-        this.moveTo(spawnpoint.lat, spawnpoint.long, spawnpoint.elev);
         return this.ensureLoggedIn()
             .then(() => {
+                this.moveTo(spawnpoint.lat, spawnpoint.long, spawnpoint.elev);
                 return new Promise((resolve, reject) => {
                     if (true === Config.simulate) {
                         setTimeout(() => {
