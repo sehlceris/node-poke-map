@@ -126,7 +126,7 @@ export class Clairvoyance {
         let workerLogins = Data.getWorkers();
 
         let workers = [];
-        for (var i = 0; i < Config.maxAccounts; i++) {
+        for (var i = 0; (i < Config.maxAccounts && i < workerLogins.length); i++) {
             let workerLogin = workerLogins[i];
             workers.push(new Worker(workerLogin));
         }

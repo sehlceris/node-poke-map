@@ -22,11 +22,7 @@ export default class TestData {
             fakePogobufMapResponse = JSON.parse((fs.readFileSync(FAKE_POGOBUF_JSON_PATH)));
         }
 
-        fakePogobufMapResponse.current_timestamp_ms = {
-            "low": new Date().getTime(),
-            "high": 342,
-            "unsigned": false
-        };
+        fakePogobufMapResponse.current_timestamp_ms = new Date().getTime();
 
         let pkmn = fakePogobufMapResponse.wild_pokemons[0];
 
@@ -35,16 +31,9 @@ export default class TestData {
         pkmn.spawn_point_id = spawnpointId;
         pkmn.pokemon_data.pokemon_id = Utils.getRandomInt(1, 150);
 
-        pkmn.encounter_id = {
-            low: Utils.getRandomInt(-126129411, -1),
-            high: 2115321473
-        };
+        pkmn.encounter_id = Utils.getRandomInt(1000000, 99999999999999);
 
-        pkmn.last_modified_timestamp_ms = {
-            "low": new Date().getTime(),
-            "high": 342,
-            "unsigned": false
-        };
+        pkmn.last_modified_timestamp_ms = new Date().getTime();
 
         pkmn.time_till_hidden_ms = Utils.getRandomInt(600000, 900000);
 

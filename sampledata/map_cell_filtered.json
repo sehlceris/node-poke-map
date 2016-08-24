@@ -1,14 +1,6 @@
 {
-  "s2_cell_id": {
-    "low": -1073741824,
-    "high": -2133009343,
-    "unsigned": true
-  },
-  "current_timestamp_ms": {
-    "low": 2110848159,
-    "high": 342,
-    "unsigned": false
-  },
+  "s2_cell_id": "9285538706683330560",
+  "current_timestamp_ms": 1472016110600,
   "forts": [],
   "spawn_points": [],
   "deleted_objects": [],
@@ -17,26 +9,14 @@
   "decimated_spawn_points": [],
   "wild_pokemons": [
     {
-      "encounter_id": {
-        "low": -126129411,
-        "high": -2115321473,
-        "unsigned": true
-      },
-      "last_modified_timestamp_ms": {
-        "low": 2110848159,
-        "high": 342,
-        "unsigned": false
-      },
-      "latitude": 33.702965309326395,
-      "longitude": -117.8038946702803,
-      "spawn_point_id": "80dcdc41daf",
+      "encounter_id": "3281067902168567197",
+      "last_modified_timestamp_ms": 1472016110600,
+      "latitude": 33.702730811036844,
+      "longitude": -117.80187952150656,
+      "spawn_point_id": "80dcdc41f55",
       "pokemon_data": {
-        "id": {
-          "low": 0,
-          "high": 0,
-          "unsigned": true
-        },
-        "pokemon_id": 1,
+        "id": 0,
+        "pokemon_id": 41,
         "cp": 0,
         "stamina": 0,
         "stamina_max": 0,
@@ -55,28 +35,106 @@
         "individual_stamina": 0,
         "cp_multiplier": 0,
         "pokeball": 0,
-        "captured_cell_id": {
-          "low": 0,
-          "high": 0,
-          "unsigned": true
-        },
+        "captured_cell_id": 0,
         "battles_attacked": 0,
         "battles_defended": 0,
         "egg_incubator_id": "",
-        "creation_time_ms": {
-          "low": 0,
-          "high": 0,
-          "unsigned": true
-        },
+        "creation_time_ms": 0,
         "num_upgrades": 0,
         "additional_cp_multiplier": 0,
         "favorite": 0,
         "nickname": "",
         "from_fort": 0
       },
-      "time_till_hidden_ms": 186717
+      "time_till_hidden_ms": 828972
+    },
+    {
+      "encounter_id": "1618329726630054221",
+      "last_modified_timestamp_ms": 1472016110600,
+      "latitude": 33.70313360139746,
+      "longitude": -117.80187952150656,
+      "spawn_point_id": "80dcdc41f63",
+      "pokemon_data": {
+        "id": 0,
+        "pokemon_id": 20,
+        "cp": 0,
+        "stamina": 0,
+        "stamina_max": 0,
+        "move_1": 0,
+        "move_2": 0,
+        "deployed_fort_id": "",
+        "owner_name": "",
+        "is_egg": false,
+        "egg_km_walked_target": 0,
+        "egg_km_walked_start": 0,
+        "origin": 0,
+        "height_m": 0,
+        "weight_kg": 0,
+        "individual_attack": 0,
+        "individual_defense": 0,
+        "individual_stamina": 0,
+        "cp_multiplier": 0,
+        "pokeball": 0,
+        "captured_cell_id": 0,
+        "battles_attacked": 0,
+        "battles_defended": 0,
+        "egg_incubator_id": "",
+        "creation_time_ms": 0,
+        "num_upgrades": 0,
+        "additional_cp_multiplier": 0,
+        "favorite": 0,
+        "nickname": "",
+        "from_fort": 0
+      },
+      "time_till_hidden_ms": 826660
     }
   ],
-  "catchable_pokemons": [],
-  "nearby_pokemons": []
+  "catchable_pokemons": [
+    {
+      "spawn_point_id": "80dcdc41f55",
+      "encounter_id": "3281067902168567197",
+      "pokemon_id": 41,
+      "expiration_timestamp_ms": 1472016939572,
+      "latitude": 33.702730811036844,
+      "longitude": -117.80187952150656
+    },
+    {
+      "spawn_point_id": "80dcdc41f63",
+      "encounter_id": "1618329726630054221",
+      "pokemon_id": 20,
+      "expiration_timestamp_ms": 1472016937260,
+      "latitude": 33.70313360139746,
+      "longitude": -117.80187952150656
+    }
+  ],
+  "nearby_pokemons": [
+    {
+      "pokemon_id": 102,
+      "distance_in_meters": 0,
+      "encounter_id": "12648066532248979197",
+      "fort_id": "",
+      "fort_image_url": ""
+    },
+    {
+      "pokemon_id": 16,
+      "distance_in_meters": 0,
+      "encounter_id": "676725905972628317",
+      "fort_id": "",
+      "fort_image_url": ""
+    },
+    {
+      "pokemon_id": 41,
+      "distance_in_meters": 0,
+      "encounter_id": "3281067902168567197",
+      "fort_id": "",
+      "fort_image_url": ""
+    },
+    {
+      "pokemon_id": 20,
+      "distance_in_meters": 0,
+      "encounter_id": "1618329726630054221",
+      "fort_id": "",
+      "fort_image_url": ""
+    }
+  ]
 }
