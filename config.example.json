@@ -31,6 +31,7 @@
   "workerConsecutiveLoginFailureLimit": 3,
   "workerConsecutiveScanFailureLimit": 5,
   "randomWorkerLoginFuzzFactor": 20000,
+  "randomMaximumLoggedInTimeFuzzFactor": 600000,
   "workerReloginDelayMs": 20000,
   "enableGreedyWorkerAllocation": false,
   "enableParallelRequests": true,

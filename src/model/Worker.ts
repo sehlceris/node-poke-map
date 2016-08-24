@@ -28,6 +28,7 @@ export default class Worker {
     isFreeBool:Boolean;
     isLoggedInBool:Boolean;
     lastLoggedInTime:Date;
+    randomMaximumLoggedInTimeFuzzFactor:number;
     isWaitingUntilReloginBool:Boolean;
     isBannedBool:Boolean;
     currentLat:number;
@@ -64,8 +65,9 @@ export default class Worker {
         //If worker has been logged in for too long, relogin
         if (this.lastLoggedInTime) {
             let loginDiff = Utils.timestepTransformUp(new Date() - this.lastLoggedInTime);
-            if (loginDiff > Config.workerMaximumLoggedInTime) {
-                log.debug(`worker ${this.id}:${this.username} has been logged in for ${loginDiff} ms, logging in again`);
+            let maxLoggedInTime = Config.workerMaximumLoggedInTime - this.randomMaximumLoggedInTimeFuzzFactor;
+            if (loginDiff > maxLoggedInTime) {
+                log.info(`worker ${this.id}:${this.username} has been logged in for ${loginDiff} ms, logging in again`);
                 this.isLoggedInBool = false;
             }
         }
@@ -118,6 +120,7 @@ export default class Worker {
             this.isLoggedInBool = true;
             this.isWaitingUntilReloginBool = false;
             this.lastLoggedInTime = new Date();
+            this.randomMaximumLoggedInTimeFuzzFactor = Utils.getRandomInt(0, Config.randomMaximumLoggedInTimeFuzzFactor);
             log.verbose(`worker ${this.id}:'${this.username}' logged in successfully`);
             return res;
         })
