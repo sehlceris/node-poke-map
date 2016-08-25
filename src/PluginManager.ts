@@ -4,11 +4,12 @@ import Pokemon from 'model/Pokemon';
 import Constants from './Constants';
 import Config from './Config';
 import Utils from './Utils';
+import Spawnpoint from "./model/Spawnpoint";
 
 const log:any = Utils.getLogger('PluginManager');
 
 export interface Plugin {
-    handleSpawn(pokemon:Pokemon):void;
+    handleSpawn(pokemon:Pokemon, spawnpoint:Spawnpoint):void;
     handleError(error:String):void;
     getPluginName():String;
 }
@@ -52,13 +53,13 @@ export default class PluginManager {
         });
     }
 
-    handleSpawn(pokemon:Pokemon):void {
+    handleSpawn(pokemon:Pokemon, spawnpoint:Spawnpoint):void {
         this.plugins.forEach((plugin) => {
             try {
-                plugin.handleSpawn(pokemon);
+                plugin.handleSpawn(pokemon, spawnpoint);
             }
             catch (e) {
-                log.error(`failed to handle spawn for plugin ${plugin.getName()}: ${e}`);
+                log.error(`failed to handle spawn for plugin ${plugin.getPluginName()}: ${e}`);
             }
         });
     }
