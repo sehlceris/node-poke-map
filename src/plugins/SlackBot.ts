@@ -45,7 +45,7 @@ export default class SlackBot {
         if (this.subscriptions.includes(pokemon.number)) {
             let gmapsUrl = `http://maps.google.com/maps?z=12&t=m&q=loc:${pokemon.lat}+${pokemon.long}`;
             let timeLeft = pokemon.disappearTimeMs - new Date().getTime();
-            let timeLeftStr = `${Math.round(timeLeft / 60000)} minutes`;
+            let timeLeftStr = `${Math.floor(timeLeft / 60000)} minutes`;
             let disappearMinute = moment(new Date()).startOf('hour').add(spawnpoint.time, 'seconds').get('minute');
             let message = `${pokemon.name} despawns at xx:${disappearMinute} (${timeLeftStr}) - ${gmapsUrl}`;
             this.bot.postMessageToChannel(this.channel, message);
