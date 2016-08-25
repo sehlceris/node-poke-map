@@ -301,6 +301,7 @@ export class Clairvoyance {
 
                     pokemon.forEach((pkmn:Pokemon) => {
                         DatabaseAdapter.upsertPokemon(pkmn);
+                        this.pluginManager.handleSpawn(pkmn);
                     });
 
                     this.spawnsProcessed++;
