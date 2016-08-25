@@ -168,10 +168,13 @@ export default class Worker {
                         let cellIds = pogobuf.Utils.getCellIDs(this.currentLat, this.currentLong, 1);
                         this.client.getMapObjects(cellIds, Array(cellIds.length).fill(0))
                             .then((mapObjects) => {
+                                this.handleScanSuccess();
+                                this.incrementScanCounter();
                                 return mapObjects.map_cells[0];
                             })
                             .then(resolve)
                             .catch((err) => {
+                                this.handleScanFailure();
                                 reject(err)
                             });
                     }

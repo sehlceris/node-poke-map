@@ -239,7 +239,7 @@ export class Clairvoyance {
             max worker travel speed: ${Config.workerMaximumMovementSpeedMetersPerSecond} m/s
             avg worker speed: ${averageWorkerSpeed} m/s; highest: ${highestWorkerSpeed} (worker ${highestWorkerSpeedId}); lowest: ${lowestWorkerSpeed} (worker ${lowestWorkerSpeedId})
             avg worker movements/minute: ${averageWorkerMovementsPerMinute}; highest: ${highestWorkerMovementsPerMinute}  (worker ${highestWorkerMovementsId}); lowest: ${lowestWorkerMovementsPerMinute} (worker ${lowestWorkerMovementsId})
-            avg worker scans/minute: ${averageWorkerScansPerMinute}; highest: ${highestWorkerScansPerMinute}  (worker ${highestWorkerScansId}); lowest: ${lowestWorkerScansPerMinute} (worker ${lowestWorkerScansId})
+            avg worker scans/minute: ${averageWorkerScansPerMinute}; highest: ${highestWorkerScansPerMinute}  (worker ${highestWorkerScansId} x${highestWorkerScans}); lowest: ${lowestWorkerScansPerMinute} (worker ${lowestWorkerScansId} x${lowestWorkerScans})
             
             request queue: ${requestQueueLength}
             total requests processed: ${totalRequestsProcessed}
