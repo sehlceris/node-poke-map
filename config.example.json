@@ -27,7 +27,6 @@
 
   "statisticLoggingInterval": 180000,
   "healthCheckInterval": 60000,
-  "configReloadInterval": 180000,
 
   "globalMaximumBannedAccountsLimit": 3,
   "workerConsecutiveLoginFailureLimit": 3,

@@ -51,7 +51,6 @@ export interface Config {
 
     statisticLoggingInterval:number; // interval, in milliseconds, to print statistics. you probably should set it to at least 60000
     healthCheckInterval:number; //interval at which health checking is performed
-    configReloadInterval:number; //interval at which config will be reloaded (in case of updates to the config are desired without restarting the server) - set to 0 to disable
 
     //Simulation
     simulate:boolean; // if true, requests will NOT be made to the API and instead a simulation will occur. useful for determining proper settings for workers/scan delay
@@ -83,28 +82,27 @@ export interface SlackBotConfig {
 
 let config = JSON.parse(fs.readFileSync(Constants.CONFIG_JSON_PATH, 'utf-8'));
 
-//set up an infinite loop to reload the config every once in a while
-let reloadConfig = function () {
-    fs.readFile(Constants.CONFIG_JSON_PATH, 'utf-8', (err, data) => {
-        try {
-            if (err) {
-                throw err;
-            }
-            config = JSON.parse(data);
-            console.log(`reloaded config`);
-        }
-        catch (e) {
-            console.log(`failed to reload config: ${config}`);
-        }
-    });
-    setTimeout(reloadConfig, config.configReloadInterval);
-};
-if (config.configReloadInterval > 4999) {
-    setTimeout(reloadConfig, config.configReloadInterval);
-}
-else {
-    config.configReloadInterval = 0;
-}
+// //set up an infinite loop to reload the config every once in a while
+// let reloadConfig = function () {
+//     fs.readFile(Constants.CONFIG_JSON_PATH, 'utf-8', (err, data) => {
+//         try {
+//             if (err) {
+//                 throw err;
+//             }
+//             config = JSON.parse(data);
+//             console.log(`reloaded config`);
+//         }
+//         catch (e) {
+//             console.log(`failed to reload config: ${config}`);
+//         }
+//     });
+//     setTimeout(reloadConfig, config.configReloadInterval);
+// };
+// if (config.configReloadInterval > 4999) {
+//     setTimeout(reloadConfig, config.configReloadInterval);
+// }
+// else {
+//     config.configReloadInterval = 0;
+// }
 
 export default config;
-console.log(`loaded config - reload interval is ${config.configReloadInterval}`); //console.log because the config has not been loaded yet
