@@ -1,6 +1,7 @@
 let fs = require('fs');
 import Utils from './Utils';
 import Constants from './Constants';
+import {SlackBotConfig} from 'plugins/SlackBot';
 
 export interface Config {
     //End user will probably want to configure these
@@ -62,22 +63,6 @@ export interface Config {
 
     //Bits (set by the program)
     pauseScanning:boolean; //if true, will cause the scanner to pause;
-
-    //Plugins
-    plugins:Plugins;
-}
-
-export interface Plugins {
-    slackBot:SlackBotConfig;
-}
-
-export interface SlackBotConfig {
-    enabled:Boolean;
-    sendMessageOnInitialization:Boolean;
-    token:String;
-    name:String;
-    channel:String;
-    subscriptions:Array<Number>;
 }
 
 let config = JSON.parse(fs.readFileSync(Constants.CONFIG_JSON_PATH, 'utf-8'));

@@ -50,51 +50,5 @@
   "simulationRequestDuration": 1500,
   "workerLoginFailureProbability": 0.00,
   "workerScanFailureProbability": 0.00,
-  "minutesSimulated": 300,
-
-  "plugins": {
-    "slackBot": {
-      "enabled": true,
-      "sendMessageOnInitialization": true,
-      "token": "xoxoooobso-3hc8e93q4ty",
-      "name": "clairvoyance",
-      "channel": "clairvoyance",
-      "subscriptions": [
-        1,
-        2,
-        3,
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        31,
-        34,
-        35,
-        36,
-        39,
-        40,
-        62,
-        68,
-        70,
-        71,
-        103,
-        110,
-        113,
-        114,
-        120,
-        121,
-        124,
-        130,
-        131,
-        132,
-        139,
-        143,
-        147,
-        148,
-        149
-      ]
-    }
-  }
+  "minutesSimulated": 300
 }

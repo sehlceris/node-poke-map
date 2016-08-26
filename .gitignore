@@ -23,5 +23,6 @@ workers.json
 workers.dev.json
 workers.production.json
 accounts.json
+slackbot-config.json
 db.sqlite
 scan.log

@@ -38,11 +38,9 @@ export default class PluginManager {
                             try {
                                 let Plugin = require(Constants.PLUGINS_REQUIRE_PATH + file.slice(0, file.length - 3));
                                 let pluginName = Plugin.pluginName;
-                                if (Config.plugins[pluginName] && Config.plugins[pluginName].enabled) {
-                                    let plugin = new Plugin(Config.plugins[pluginName]);
-                                    log.info(`loaded plugin: ${plugin.getPluginName()}`);
-                                    this.plugins.push(plugin);
-                                }
+                                let plugin = new Plugin();
+                                log.info(`loaded plugin: ${plugin.getPluginName()}`);
+                                this.plugins.push(plugin);
                             }
                             catch (e) {
                                 log.error(`failed to load plugin ${file}: ${e}`);
