@@ -23,7 +23,7 @@ export default class SlackBot {
 
     static pluginName:String = 'slackBot';
 
-    config:SlackBotConfig
+    config:SlackBotConfig;
     bot:any;
 
     constructor() {
@@ -38,13 +38,14 @@ export default class SlackBot {
             name: this.config.name
         });
 
-        if (true === this.config.enabled && this.config.sendMessageOnInitialization) {
-            this.bot.on('start', () => {
-                let message = `Clairvoyance SlackBot notifier initialized. Subscriptions: ${JSON.stringify(this.config.subscriptions)}`;
-                log.info(message);
+        this.bot.on('start', () => {
+            let message = `Clairvoyance SlackBot notifier initialized. Subscriptions: ${JSON.stringify(this.config.subscriptions)}`;
+            log.info(message);
+            if (true === this.config.enabled && this.config.sendMessageOnInitialization) {
                 this.bot.postMessageToChannel(this.config.channel, message);
-            });
-        }
+            }
+        });
+
     }
 
     getPluginName():String {
@@ -75,7 +76,7 @@ export default class SlackBot {
                 log.error(`failed to refresh config: ${err}`);
             }
             this.config = JSON.parse(data);
-            log.debug(`reloaded config`);
+            log.debug(`reloaded config. subscriptions: ${JSON.stringify(this.config.subscriptions)}`);
 
             if (this.config.configRefreshInterval > 4999) {
                 setTimeout(this.refreshConfig.bind(this), this.config.configRefreshInterval);
