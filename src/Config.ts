@@ -28,14 +28,22 @@ export interface Config {
     mongoDbPort:number;
     mongoDbDatabaseName:string;
 
-    //End user probably should not touch
+    //Logging/Statistics
+    consoleLogLevel:String; // 'debug', 'verbose', 'info', 'warn', 'error'
+    fileLogLevel:String; // 'debug', 'verbose', 'info', 'warn', 'error'
+    logFilePath:String; // path you want the file log to be output to
+    statisticLoggingInterval:number; // interval, in milliseconds, to print statistics. you probably should set it to at least 60000
+
+    //More settings, limits, and whatnot, you don't have to touch this unless you really want to
     globalMaximumBannedAccountsLimit:number; //maximum number of banned accounts detected before the program exits
     workerConsecutiveLoginFailureLimit:number; //maximum number of consecutive failed worker login attempts before worker is removed from pool
     workerConsecutiveScanFailureLimit:number; //maximum number of consecutive failed worker scan attempts before worker is removed from pool
     workerReloginDelayMs:number; //time to wait before attempting to log worker in again, if login fails
     enableGreedyWorkerAllocation:boolean; // will use all provided workers equally instead of trying to maximize each worker's usage
     enableParallelRequests:boolean; // if false, will wait for previous scan request to finish before allowing start of next. probably best to set it to true unless you want to throttle this way
+    healthCheckInterval:number; //interval at which health checking is performed (currently all it does is check if too many workers are banned)
 
+    //Fuzzing and formatting, you don't have to touch this unless you really want to
     randomWorkerLoginFuzzFactor:number; // random delay until the worker is allowed to log in.
     randomMaximumLoggedInTimeFuzzFactor:number; // random amount of time to subtract from workerMaximumLoggedInTime
     randomWorkerDelayFuzzFactor:number; // random worker delay added to the regular scan delay. between 0 and this number, in milliseconds
@@ -45,13 +53,6 @@ export interface Config {
     randomElevationFuzzFactor:number; // random elevation fuzz. between 0 and this number
     latLongDecimalPlaces:number; // how many decimal places remain at the end of lat/longs when submitting to the server
     elevDecimalPlaces:number; // how many decimal places remain at the end of elevations when submitting to the server
-
-    consoleLogLevel:String; // 'debug', 'verbose', 'info', 'warn', 'error'
-    fileLogLevel:String; // 'debug', 'verbose', 'info', 'warn', 'error'
-    logFilePath:String; // path you want the file log to be output to
-
-    statisticLoggingInterval:number; // interval, in milliseconds, to print statistics. you probably should set it to at least 60000
-    healthCheckInterval:number; //interval at which health checking is performed
 
     //Simulation
     simulate:boolean; // if true, requests will NOT be made to the API and instead a simulation will occur. useful for determining proper settings for workers/scan delay

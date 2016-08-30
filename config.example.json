@@ -24,9 +24,7 @@
   "consoleLogLevel": "verbose",
   "fileLogLevel": "info",
   "logFilePath": "scan.log",
-
   "statisticLoggingInterval": 180000,
-  "healthCheckInterval": 60000,
 
   "globalMaximumBannedAccountsLimit": 3,
   "workerConsecutiveLoginFailureLimit": 3,
@@ -34,6 +32,7 @@
   "workerReloginDelayMs": 5000,
   "enableGreedyWorkerAllocation": false,
   "enableParallelRequests": true,
+  "healthCheckInterval": 60000,
 
   "randomWorkerLoginFuzzFactor": 10000,
   "randomMaximumLoggedInTimeFuzzFactor": 10000,
