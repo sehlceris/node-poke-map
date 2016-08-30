@@ -68,7 +68,8 @@ export interface Config {
 
 let config = JSON.parse(fs.readFileSync(Constants.CONFIG_JSON_PATH, 'utf-8'));
 
-// //set up an infinite loop to reload the config every once in a while
+// //set up an infinite loop to reload the config every once in a while **ACTUALLY THIS IS A BAD IDEA BECAUSE SOME CONFIG VARIABLES SUCH AS MAXWORKERS ISN'T AFFECTED**
+//
 // let reloadConfig = function () {
 //     fs.readFile(Constants.CONFIG_JSON_PATH, 'utf-8', (err, data) => {
 //         try {

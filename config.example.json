@@ -10,7 +10,7 @@
   "workerMaximumMovementSpeedMetersPerSecond": 10,
   "workerMaximumLoggedInTime": 600000,
   "maximumRequestQueueLength": 100,
-  "maxAccounts": 32,
+  "maxAccounts": 24,
 
   "restPort": 5000,
   "googleMapsApiKey": "AHHHHAAAAAAAAAAAAAA",
