@@ -11,7 +11,6 @@ data/spawns.production.json
 data/spawns_with_elevations.json
 data/stops.json
 src/.baseDir.ts
-www
 
 scratch/
 scratch.ts
@@ -26,3 +25,4 @@ accounts.json
 slackbot-config.json
 db.sqlite
 scan.log
+deploy.sh
