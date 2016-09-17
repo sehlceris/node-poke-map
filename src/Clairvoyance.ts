@@ -1,3 +1,4 @@
+import {GymData} from "./model/Gym";
 let pogobuf = require('pogobuf');
 let geolib = require('geolib');
 import bluebird = require('bluebird');
@@ -303,6 +304,13 @@ export class Clairvoyance {
                         DatabaseAdapter.upsertPokemon(pkmn);
                         this.pluginManager.handleSpawn(pkmn, spawnpoint);
                     });
+
+                    let gyms = ResponseParser.parseGyms(result);
+                    if (gyms.length) {
+                        gyms.forEach((gym:GymData) => {
+                            DatabaseAdapter.upsertGym(gym);
+                        });
+                    }
 
                     this.spawnsProcessed++;
                     this.spawnsScannedSuccessfully++;

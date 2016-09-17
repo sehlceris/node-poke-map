@@ -69,6 +69,11 @@ export default class Utils {
         }
     }
 
+    static getRandomBoolean(chanceOfSuccess = 0.5):Boolean {
+        let random = Math.random();
+        return random <= chanceOfSuccess;
+    }
+
     static getRandomFloat(min:Number, max:Number, decimalPlaces?:Number):Number {
         let random = Math.random() * (max - min) + min;
         if (typeof decimalPlaces === 'number') {
