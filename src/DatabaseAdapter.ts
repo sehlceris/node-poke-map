@@ -111,7 +111,7 @@ export class DatabaseAdapter {
     upsertGym(gymData:GymData):Promise {
         return this.dbConnectionPromise
             .then((db) => {
-                log.info(`upserting gym ${gymData.id}`);
+                log.debug(`upserting gym ${gymData.id}`);
                 return db.collection(GYM_COLLECTION_NAME).updateOne({
                     $and: [
                         {id: gymData.id},

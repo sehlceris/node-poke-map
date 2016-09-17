@@ -36,7 +36,7 @@ export default class TestData {
         }
 
         let gym = fakePogobufMapResponse.forts[0];
-        if (gym) {
+        if (gym && Utils.getRandomBoolean(0.25)) {
             gym.owned_by_team = Utils.getRandomInt(0, 3);
             gym.gym_points = Utils.getRandomInt(0, 50000);
             gym.guard_pokemon_id = Utils.getRandomInt(0, 151);
