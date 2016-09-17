@@ -8,6 +8,7 @@ import Data from './Data';
 import DatabaseAdapter from './DatabaseAdapter';
 import Utils from './Utils';
 import {PokemonData} from "./model/Pokemon";
+import {GymData} from "./model/Gym";
 
 const log:any = Utils.getLogger('RequestHandler');
 
@@ -59,13 +60,19 @@ export class RequestHandler {
     }
 
     handlePogoMapRawDataRequest(req, res) {
-        DatabaseAdapter.getActivePokemon()
-            .then((results) => {
-                let response = {};
-                response.gyms = this.getPogoMapGyms();
+
+        let pokemonPromise = DatabaseAdapter.getActivePokemon();
+        let gymsPromise = DatabaseAdapter.getGyms();
+
+        Promise.all([pokemonPromise, gymsPromise])
+            .then((values) => {
+                var [pokemonResults, gymResults] = values;
+
+                let response:any = {};
                 response.scanned = [];
                 response.pokestops = this.getPogoMapStops();
-                response.pokemons = results.map((pkmnData:PokemonData) => {
+
+                response.pokemons = pokemonResults.map((pkmnData:PokemonData) => {
 
                     let disappearTime = pkmnData.disappearTimeMs;
                     if (Config.simulate) {
@@ -90,14 +97,73 @@ export class RequestHandler {
                         "spawnpoint_id": pkmnData.spawnpointId
                     };
                 });
-                res.json(response);
-            })
-            .catch((err) => {
-                log.error(err);
-                res.status(500).json({
-                    error: err
+
+                response.gyms = gymResults.map((gymData:GymData) => {
+                    // var sample = {
+                    //     "enabled": true,
+                    //     "guard_pokemon_id": 144,
+                    //     "gym_id": dat.id,
+                    //     "gym_points": 1337,
+                    //     "last_modified": new Date().getTime(),
+                    //     "latitude": dat.lat,
+                    //     "longitude": dat.lng,
+                    //     "team_id": 1
+                    // }
+
+                    return {
+                        "enabled": true,
+                        "guard_pokemon_id": gymData.guard_pokemon_id,
+                        "gym_points": gymData.gym_points,
+                        "last_modified": gymData.last_modified_timestamp_ms,
+                        "latitude": gymData.latitude,
+                        "longitude": gymData.longitude,
+                        "team_id": gymData.owned_by_team
+                    }
                 });
-            })
+
+                res.json(response);
+
+            });
+
+        // DatabaseAdapter.getActivePokemon()
+        //     .then((results) => {
+        //         let response = {};
+        //         response.gyms = this.getPogoMapGyms();
+        //         response.scanned = [];
+        //         response.pokestops = this.getPogoMapStops();
+        //         response.pokemons = results.map((pkmnData:PokemonData) => {
+        //
+        //             let disappearTime = pkmnData.disappearTimeMs;
+        //             if (Config.simulate) {
+        //                 let now = new Date().getTime();
+        //                 let diff = disappearTime - now;
+        //                 diff = Utils.timestepTransformDown(diff);
+        //                 disappearTime = now + diff;
+        //             }
+        //
+        //             return {
+        //                 "disappear_time": disappearTime,
+        //                 "encounter_id": pkmnData.encounterId,
+        //                 "latitude": pkmnData.lat,
+        //                 "longitude": pkmnData.long,
+        //                 "pokemon_id": pkmnData.number,
+        //                 "pokemon_name": pkmnData.name,
+        //                 "pokemon_rarity": "Common",
+        //                 "pokemon_types": [{
+        //                     "color": "#8a8a59",
+        //                     "type": "Normal"
+        //                 }],
+        //                 "spawnpoint_id": pkmnData.spawnpointId
+        //             };
+        //         });
+        //         res.json(response);
+        //     })
+        //     .catch((err) => {
+        //         log.error(err);
+        //         res.status(500).json({
+        //             error: err
+        //         });
+        //     })
     }
 
     getPogoMapGyms() {

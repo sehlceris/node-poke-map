@@ -1,3 +1,4 @@
+import {GymData} from "./model/Gym";
 let Int64 = require('node-int64')
 import fs = require('fs');
 import bluebird = require('bluebird');
@@ -76,5 +77,11 @@ export default class ResponseParser {
         });
 
         return pokes;
+    }
+
+    static parseGyms(pogobufMapResponse):Array<GymData> {
+        return pogobufMapResponse.forts.filter((fort) => {
+            return (fort.type === 0);
+        });
     }
 }

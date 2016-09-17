@@ -1,7 +1,26 @@
 {
   "s2_cell_id": "9285538706683330560",
   "current_timestamp_ms": 1472016110600,
-  "forts": [],
+  "forts": [
+    {
+      "id": "73d6dfdd191341ec82b4e364cdc86966.16",
+      "last_modified_timestamp_ms": 1472015821688,
+      "latitude": 33.702001,
+      "longitude": -117.804532,
+      "enabled": true,
+      "type": 0,
+      "owned_by_team": 2,
+      "guard_pokemon_id": 19,
+      "guard_pokemon_cp": 0,
+      "gym_points": 2000,
+      "is_in_battle": false,
+      "active_fort_modifier": [],
+      "lure_info": null,
+      "cooldown_complete_timestamp_ms": 0,
+      "sponsor": 0,
+      "rendering_type": 0
+    }
+  ],
   "spawn_points": [],
   "deleted_objects": [],
   "is_truncated_list": false,

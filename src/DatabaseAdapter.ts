@@ -1,3 +1,4 @@
+import {GymData} from "./model/Gym";
 let Mongo = require('mongodb');
 let MongoClient = Mongo.MongoClient;
 import bluebird = require('bluebird');
@@ -11,7 +12,11 @@ const log:any = Utils.getLogger('DatabaseAdapter');
 const REAL_POKEMON_COLLECTION_NAME = 'Pokemon';
 const SIMULATED_POKEMON_COLLECTION_NAME = 'SimulatedPokemon';
 
+const REAL_GYM_COLLECTION_NAME = 'Gym';
+const SIMULATED_GYM_COLLECTION_NAME = 'SimulatedGym';
+
 const POKEMON_COLLECTION_NAME = Config.simulate ? SIMULATED_POKEMON_COLLECTION_NAME : REAL_POKEMON_COLLECTION_NAME;
+const GYM_COLLECTION_NAME = Config.simulate ? SIMULATED_GYM_COLLECTION_NAME : REAL_GYM_COLLECTION_NAME;
 
 export class DatabaseAdapter {
 
@@ -65,6 +70,20 @@ export class DatabaseAdapter {
             });
     }
 
+    getGyms():Promise {
+        let startQueryTime = new Date();
+        return this.dbConnectionPromise
+            .then((db) => {
+                return db.collection(GYM_COLLECTION_NAME).find().toArray();
+            })
+            .then((results) => {
+                let endQueryTime = new Date();
+                let queryTime = endQueryTime.getTime() - startQueryTime.getTime();
+                log.silly(`gyms database query time: ${queryTime}`);
+                return results;
+            });
+    }
+
     upsertPokemon(pkmn:Pokemon):Promise {
         return this.dbConnectionPromise
             .then((db) => {
@@ -81,10 +100,36 @@ export class DatabaseAdapter {
                 });
             })
             .then((result) => {
-                log.debug(`successfully upserted ${result}`);
+                log.debug(`successfully upserted pokemon ${result}`);
+                return result;
             })
             .catch((err) => {
                 log.error(`error upserting pokemon: ${err}`);
+            })
+    }
+
+    upsertGym(gymData:GymData):Promise {
+        return this.dbConnectionPromise
+            .then((db) => {
+                log.info(`upserting gym ${gymData.id}`);
+                return db.collection(GYM_COLLECTION_NAME).updateOne({
+                    $and: [
+                        {id: gymData.id},
+                        {latitude: gymData.latitude},
+                        {longitude: gymData.longitude}
+                    ]
+                }, {
+                    $set: gymData
+                }, {
+                    upsert: true
+                });
+            })
+            .then((result) => {
+                log.debug(`successfully upserted gym ${result}`);
+                return result;
+            })
+            .catch((err) => {
+                log.error(`error upserting gym: ${err}`);
             })
     }
 }
