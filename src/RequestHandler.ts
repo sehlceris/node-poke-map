@@ -84,6 +84,7 @@ export class RequestHandler {
 
                     return {
                         "disappear_time": disappearTime,
+                        "disappear_time": disappearTime,
                         "encounter_id": pkmnData.encounterId,
                         "latitude": pkmnData.lat,
                         "longitude": pkmnData.long,
@@ -111,8 +112,10 @@ export class RequestHandler {
                     // }
 
                     return {
+                        "gym_id": gymData.id,
                         "enabled": true,
                         "guard_pokemon_id": gymData.guard_pokemon_id,
+                        "guard_pokemon_cp": gymData.guard_pokemon_cp,
                         "gym_points": gymData.gym_points,
                         "last_modified": gymData.last_modified_timestamp_ms,
                         "latitude": gymData.latitude,
