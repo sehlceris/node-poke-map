@@ -1,5 +1,7 @@
 #node-pogo-map
 
+WARNING: The contents of this repository are outdated and no longer work. It is published just for review purposes.
+
 ## Getting Started
 
 Install nodejs & MongoDB.
