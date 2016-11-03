@@ -301,8 +301,12 @@ export class Clairvoyance {
                     }
 
                     pokemon.forEach((pkmn:Pokemon) => {
-                        DatabaseAdapter.upsertPokemon(pkmn);
-                        this.pluginManager.handleSpawn(pkmn, spawnpoint);
+                        DatabaseAdapter.upsertPokemon(pkmn)
+                            .then((result:any) => {
+                                log.info('new spawns: ' + result.modifiedCount);
+                                if(result.modifiedCount) 
+                                this.pluginManager.handleSpawn(pkmn, spawnpoint);
+                            });
                     });
 
                     let gyms = ResponseParser.parseGyms(result);
