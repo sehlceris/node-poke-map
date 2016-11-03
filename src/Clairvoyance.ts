@@ -256,7 +256,7 @@ export class Clairvoyance {
             ********************************
             `);
 
-            if (Config.simulate && minutesRunning > Config.minutesSimulated) {
+            if (Config.simulate && minutesRunning > Config.minutesSimulated && Config.minutesSimulated > 0) {
                 log.info(`simulation complete, exiting application`);
                 process.exit(0);
             }
@@ -304,8 +304,8 @@ export class Clairvoyance {
                         DatabaseAdapter.upsertPokemon(pkmn)
                             .then((result:any) => {
                                 log.info('new spawns: ' + result.modifiedCount);
-                                if(result.modifiedCount) 
-                                this.pluginManager.handleSpawn(pkmn, spawnpoint);
+                                if (result.modifiedCount)
+                                    this.pluginManager.handleSpawn(pkmn, spawnpoint);
                             });
                     });
 
