@@ -151,46 +151,6 @@ export class RequestHandler {
                 res.json(response);
 
             });
-
-        // DatabaseAdapter.getActivePokemon()
-        //     .then((results) => {
-        //         let response = {};
-        //         response.gyms = this.getPogoMapGyms();
-        //         response.scanned = [];
-        //         response.pokestops = this.getPogoMapStops();
-        //         response.pokemons = results.map((pkmnData:PokemonData) => {
-        //
-        //             let disappearTime = pkmnData.disappearTimeMs;
-        //             if (Config.simulate) {
-        //                 let now = new Date().getTime();
-        //                 let diff = disappearTime - now;
-        //                 diff = Utils.timestepTransformDown(diff);
-        //                 disappearTime = now + diff;
-        //             }
-        //
-        //             return {
-        //                 "disappear_time": disappearTime,
-        //                 "encounter_id": pkmnData.encounterId,
-        //                 "latitude": pkmnData.lat,
-        //                 "longitude": pkmnData.long,
-        //                 "pokemon_id": pkmnData.number,
-        //                 "pokemon_name": pkmnData.name,
-        //                 "pokemon_rarity": "Common",
-        //                 "pokemon_types": [{
-        //                     "color": "#8a8a59",
-        //                     "type": "Normal"
-        //                 }],
-        //                 "spawnpoint_id": pkmnData.spawnpointId
-        //             };
-        //         });
-        //         res.json(response);
-        //     })
-        //     .catch((err) => {
-        //         log.error(err);
-        //         res.status(500).json({
-        //             error: err
-        //         });
-        //     })
     }
 
     getPogoMapGyms():Promise<Array<GymData>> {

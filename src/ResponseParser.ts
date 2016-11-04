@@ -23,36 +23,6 @@ export default class ResponseParser {
         let wilds = pogobufMapResponse.wild_pokemons;
         let pokes = wilds.map((wild) => {
 
-            // THIS IS THE OLD WAY OF PARSING WITH INT64s
-            // let encounterIdInt64 = new Int64(wild.encounter_id.high, wild.encounter_id.low);
-            // let encounterIdOctetString:String = encounterIdInt64.toOctetString();
-            //
-            // let lastModifiedTimestampMsInt64 = new Int64(wild.last_modified_timestamp_ms.high, wild.last_modified_timestamp_ms.low);
-            //
-            // let disappearTimeMs;
-            // if (wild.time_till_hidden_ms > 0 && wild.time_till_hidden_ms < 3600000) {
-            //     // If time till hidden is less than 0 or greater than an hour, it's bugged and is wrong.
-            //     // However, it has been observed that Pokemon bugged like this will remain for at least 15 minutes - so we show it with a 15 minute despawn timer.
-            //     disappearTimeMs = lastModifiedTimestampMsInt64 + wild.time_till_hidden_ms;
-            // }
-            // else {
-            //     disappearTimeMs = lastModifiedTimestampMsInt64 + 900000;
-            // }
-            // let disappearTime = new Date(disappearTimeMs);
-            //
-            // let lastModifiedTimestampMsInt64 = new Int64(wild.last_modified_timestamp_ms.high, wild.last_modified_timestamp_ms.low);
-            //
-            // let disappearTimeMs;
-            // if (wild.time_till_hidden_ms > 0 && wild.time_till_hidden_ms < 3600000) {
-            //     // If time till hidden is less than 0 or greater than an hour, it's bugged and is wrong.
-            //     // However, it has been observed that Pokemon bugged like this will remain for at least 15 minutes - so we show it with a 15 minute despawn timer.
-            //     disappearTimeMs = lastModifiedTimestampMsInt64 + wild.time_till_hidden_ms;
-            // }
-            // else {
-            //     disappearTimeMs = lastModifiedTimestampMsInt64 + 900000;
-            // }
-            // let disappearTime = new Date(disappearTimeMs);
-
             let encounterId = wild.encounter_id;
             let timeTillHiddenMs;
             if (wild.time_till_hidden_ms > 0 && wild.time_till_hidden_ms < 3600000) {
