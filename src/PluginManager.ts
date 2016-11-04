@@ -14,14 +14,18 @@ export interface Plugin {
     getPluginName():String;
 }
 
+/**
+ * Reads plugins from the plugin directory, and sends spawn events to them
+ */
 export default class PluginManager {
 
-    plugins:Array<Plugin>
+    plugins:Array<Plugin> //Array of our plugins
 
     constructor() {
 
         this.plugins = [];
 
+        //read the plugin directory for files...
         fs.readdir(Constants.PLUGINS_STAT_PATH, (err, files:Array<String>) => {
             if (err) {
                 log.error(`failed to read plugins: ${err}`);
@@ -35,6 +39,7 @@ export default class PluginManager {
                     })
                     .forEach((file) => {
                         if (file.endsWith('.js')) {
+                            //if the file is JavaScript, require it, add instance of the plugin to our list
                             try {
                                 let Plugin = require(Constants.PLUGINS_REQUIRE_PATH + file.slice(0, file.length - 3));
                                 let pluginName = Plugin.pluginName;
@@ -51,6 +56,11 @@ export default class PluginManager {
         });
     }
 
+    /**
+     * Fires a spawn event to all plugins (this could probably be better done using an event bus, but it works)
+     * @param {Pokemon} pokemon Pokemon that spawned
+     * @param {Spawnpoint} spawnpoint Spawnpoint that the Pokemon spawned at
+     */
     handleSpawn(pokemon:Pokemon, spawnpoint:Spawnpoint):void {
         this.plugins.forEach((plugin) => {
             try {

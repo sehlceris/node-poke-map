@@ -9,8 +9,16 @@ import Pokemon from "./model/Pokemon";
 
 const log:any = Utils.getLogger('ResponseParser');
 
+/**
+ * Parses data out from the Niantic map API response
+ */
 export default class ResponseParser {
 
+    /**
+     * Parses Pokemon spawns from the Niantic map API response
+     * @param {Object} pogobufMapResponse Niantic map API response
+     * @returns {Array<Pokemon>} Spawned Pokemon
+     */
     static parsePokemon(pogobufMapResponse):Array<Pokemon> {
         let wilds = pogobufMapResponse.wild_pokemons;
         let pokes = wilds.map((wild) => {
@@ -79,6 +87,11 @@ export default class ResponseParser {
         return pokes;
     }
 
+    /**
+     * Parses Gyms from a Pogobuf map API response
+     * @param {Object} pogobufMapResponse map API response from Niantic server
+     * @returns {Array<GymData>} list of Gyms
+     */
     static parseGyms(pogobufMapResponse):Array<GymData> {
         return pogobufMapResponse.forts.filter((fort) => {
             return (fort.type === 0);

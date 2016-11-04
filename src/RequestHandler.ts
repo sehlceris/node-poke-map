@@ -14,18 +14,23 @@ const log:any = Utils.getLogger('RequestHandler');
 
 export class RequestHandler {
 
-    app:express.Application;
+    app:express.Application; //instance of express
     pogoMapGymData:any;
-    pogoMapStopData:any;
+    pogoMapStopData:any; //array of pokestops, read from JSON
 
     constructor() {
         this.app = express();
 
+        //set up API endpoints
         this.app.get('/raw_data', this.handlePogoMapRawDataRequest.bind(this));
         this.app.get('/search_control', this.handlePogoMapSearchControlGetRequest.bind(this));
         this.app.post('/search_control', this.handlePogoMapSearchControlPostRequest.bind(this));
     }
 
+    /**
+     * Starts listening for API requests, and starts serving static www data
+     * @returns {Promise}
+     */
     startListening():Promise {
         return new Promise((resolve, reject) => {
             this.app.listen(Config.restPort, (err) => {
@@ -43,10 +48,20 @@ export class RequestHandler {
         });
     }
 
+    /**
+     * Event handler for API endpoint to get status of Pokemon scanning (whether it is paused or not)
+     * @param {Request} req express request object
+     * @param {Response} res express response object
+     */
     handlePogoMapSearchControlGetRequest(req, res) {
         res.json({"status": (!Config.pauseScanning)});
     }
 
+    /**
+     * Event handler for API endpoint to pause/resume Pokemon scanning
+     * @param {Request} req express request object
+     * @param {Response} res express response object
+     */
     handlePogoMapSearchControlPostRequest(req, res) {
         if (req.query.action === 'off') {
             Config.pauseScanning = true;
@@ -59,6 +74,11 @@ export class RequestHandler {
         res.json(!!Config.pauseScanning);
     }
 
+    /**
+     * Event handler for API endpoint to get data for active Pokemon/Gyms/Pokestops
+     * @param {Request} req express request object
+     * @param {Response} res express response object
+     */
     handlePogoMapRawDataRequest(req, res) {
 
         let pokemonPromise = DatabaseAdapter.getActivePokemon();
@@ -75,6 +95,8 @@ export class RequestHandler {
                 response.pokemons = pokemonResults.map((pkmnData:PokemonData) => {
 
                     let disappearTime = pkmnData.disappearTimeMs;
+
+                    //if simulating, make the pokemon appear to despawn faster (depending on simulation timestep)
                     if (Config.simulate) {
                         let now = new Date().getTime();
                         let diff = disappearTime - now;
@@ -82,6 +104,7 @@ export class RequestHandler {
                         disappearTime = now + diff;
                     }
 
+                    //because the UI is lifted from another open-source project, we transform our database results to conform to the UI's expectations for JSON format
                     return {
                         "disappear_time": disappearTime,
                         "disappear_time": disappearTime,
@@ -111,6 +134,7 @@ export class RequestHandler {
                     //     "team_id": 1
                     // }
 
+                    //because the UI is lifted from another open-source project, we transform our database results to conform to the UI's expectations for JSON format
                     return {
                         "gym_id": gymData.id,
                         "enabled": true,
@@ -169,7 +193,7 @@ export class RequestHandler {
         //     })
     }
 
-    getPogoMapGyms() {
+    getPogoMapGyms():Promise<Array<GymData>> {
         if (typeof this.pogoMapGymData === 'undefined') {
             this.pogoMapGymData = [];
             let data = Data.getGyms();
@@ -189,6 +213,10 @@ export class RequestHandler {
         return this.pogoMapGymData;
     }
 
+    /**
+     * Gets a list of Pokestops, formatted for the UI's JSON structure expectations
+     * @returns {Array} List of pokestops
+     */
     getPogoMapStops() {
         if (typeof this.pogoMapStopData === 'undefined') {
             this.pogoMapStopData = [];

@@ -23,19 +23,26 @@ const log:any = Utils.getLogger('Main');
 
 let instance = null;
 
+/**
+ * Main application class. Starts scanning/simulating Pokemon, logging health checks, and making sure workers aren't banned.
+ */
 export class Clairvoyance {
 
-    spawnpoints:Array<Spawnpoint>;
-    requestQueue:RequestQueue;
-    workerPool:WorkerPool;
-    pluginManager:PluginManager;
-    healthCheckInterval:number;
-    spawnCount:number;
-    spawnsProcessed:number;
-    spawnsScannedSuccessfully:number;
+    spawnpoints:Array<Spawnpoint>; //list of spawnpoints that will be scanned
+    requestQueue:RequestQueue; //queue of scans to be processed
+    workerPool:WorkerPool; //pool of workers that can perform scans
+    pluginManager:PluginManager; //holds instances of plugins and sends spawn events to them
+    healthCheckInterval:number; //ms; interval at which health checks are performed
+    spawnCount:number; //number of times spawnpoints have become active (mostly just for statistics display)
+    spawnsProcessed:number; //number of attempted scans for spawns (mostly just for statistics display)
+    spawnsScannedSuccessfully:number; //number of successful scans for spawns (mostly just for statistics display)
 
-    initTime:Date;
+    initTime:Date; //time that the scanner was started
 
+    /**
+     * Gets an instance of the Clairvoyance scanner, which should be a singleton
+     * @returns {Clairvoyance} instance of the application
+     */
     static getInstance():Clairvoyance {
         if (!instance) {
             instance = new Clairvoyance();
@@ -74,6 +81,9 @@ export class Clairvoyance {
         this.startHealthCheckInterval();
     }
 
+    /**
+     * Starts an interval to check if certain thresholds have been exceeded (e.g. too many accounts banned). If safety thresholds exceeded, exit the app
+     */
     startHealthCheckInterval() {
         this.healthCheckInterval = setInterval(() => {
             let allocatedWorkers = this.workerPool.getAllocatedWorkers();
@@ -88,6 +98,9 @@ export class Clairvoyance {
         }, Utils.timestepTransformDown(Config.healthCheckInterval));
     }
 
+    /**
+     * Reads spawnpoints from the JSON and starts timers to fire events when the spawnpoints activate
+     */
     initSpawnPoints():void {
 
         if (this.spawnpoints) {
@@ -98,6 +111,7 @@ export class Clairvoyance {
 
         log.info(`Scan center: ${Config.scanCenterLat}, ${Config.scanCenterLong}`);
 
+        //Filters spawnpoints to be within the specified scan radius
         let filteredSpawnPoints = spawns.filter((spawn) => {
             let result = geolib.isPointInCircle({
                 latitude: Config.scanCenterLat,
@@ -119,6 +133,9 @@ export class Clairvoyance {
         });
     }
 
+    /**
+     * Loops through all worker accounts defined in the configuration JSON, and adds them to the worker pool
+     */
     initWorkers():void {
         if (this.workerPool) {
             return;
@@ -135,6 +152,10 @@ export class Clairvoyance {
         this.workerPool = new WorkerPool(workers);
     }
 
+    /**
+     * Starts an interval to log out runtime statistics to the console or file, mostly for visual pleasure
+     */
+    //TODO: Refactor this into its own file
     initStatisticLogging():void {
 
         this.initTime = new Date();
@@ -264,6 +285,10 @@ export class Clairvoyance {
         }, Utils.timestepTransformDown(Config.statisticLoggingInterval));
     }
 
+    /**
+     * Event handler for when a spawnpoint becomes active. Schedules a scan on the spawnpoint and upserts the scanned Pokemon
+     * @param {Spawnpoint} spawnpoint The spawnpoint that has become active
+     */
     handleSpawn(spawnpoint:Spawnpoint) {
 
         if (true === Config.pauseScanning) {
@@ -282,17 +307,19 @@ export class Clairvoyance {
                 return;
             }
 
-            worker.reserve();
+            worker.reserve(); //reserve this worker, marking it unavailable for use until we finish scanning
             log.verbose(`spawnpoint ${spawnpoint.id} spawned, sending worker ${worker.id}`);
 
+            //schedules a scan request on the spawnpoint
             let request = this.requestQueue.addWorkerScanRequest(worker, spawnpoint);
             request.completedPromise
                 .then((result) => {
                     log.verbose(`request on worker ${worker.id} completed`);
                     log.debug(JSON.stringify(result));
-                    worker.free();
+                    worker.free(); //Free this worker back into worker pool
                     worker.incrementScanCounter();
 
+                    //parse the pokemon out from the Niantic server API response
                     let pokemon = ResponseParser.parsePokemon(result);
 
                     if (!pokemon.length) {
@@ -300,15 +327,20 @@ export class Clairvoyance {
                         throw new Error(`scan found no pokemon`);
                     }
 
+                    //upsert all found pokemon to the database
                     pokemon.forEach((pkmn:Pokemon) => {
                         DatabaseAdapter.upsertPokemon(pkmn)
                             .then((result:any) => {
                                 log.info('new spawns: ' + result.modifiedCount);
-                                if (result.modifiedCount)
+
+                                //if the pokemon is new (upserted), then trigger an event to plugins
+                                if (result.modifiedCount) {
                                     this.pluginManager.handleSpawn(pkmn, spawnpoint);
+                                }
                             });
                     });
 
+                    //parse scanned gyms and upsert their current status to the database
                     let gyms = ResponseParser.parseGyms(result);
                     if (gyms.length) {
                         gyms.forEach((gym:GymData) => {
@@ -328,4 +360,4 @@ export class Clairvoyance {
     }
 }
 
-Clairvoyance.getInstance();
+Clairvoyance.getInstance(); //Gets an instance of the main application, which starts the scanning

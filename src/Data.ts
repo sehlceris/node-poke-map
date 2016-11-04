@@ -11,56 +11,44 @@ let workers;
 
 export default class Data {
 
-    static getWorkers() {
+    /**
+     * Synchronously gets worker login information from JSON
+     * @returns {Array} Worker login information
+     */
+    static getWorkers():Array {
         if (!workers) {
             workers = JSON.parse((fs.readFileSync(Constants.WORKERS_JSON_PATH)));
         }
         return workers;
     }
 
-    static getGyms() {
-        if (!gyms) {
-            gyms = JSON.parse((fs.readFileSync(Constants.GYMS_JSON_PATH)));
-        }
-        return gyms;
-    }
-
-    static getGeoGyms() {
-        if (!geoGyms) {
-            geoGyms = JSON.parse((fs.readFileSync(Constants.GEO_GYMS_JSON_PATH)));
-        }
-        return geoGyms;
-    }
-
-    static getStops() {
+    /**
+     * Synchronously gets Pokestop data from JSON
+     * @returns {Array} Pokestop data
+     */
+    static getStops():Array {
         if (!stops) {
             stops = JSON.parse((fs.readFileSync(Constants.STOPS_JSON_PATH)));
         }
         return stops;
     }
 
-    static getGeoStops() {
-        if (!geoStops) {
-            geoStops = JSON.parse((fs.readFileSync(Constants.GEO_STOPS_JSON_PATH)));
-        }
-        return geoStops;
-    }
-
-    static getPokemon() {
-        if (!pokemon) {
-            pokemon = JSON.parse((fs.readFileSync(Constants.POKEMON_JSON_PATH)));
-        }
-        return pokemon;
-    }
-
-    static getSpawns() {
+    /**
+     * Synchronously gets Spawnpoint data from JSON
+     * @returns {Array} Spawnpoint data
+     */
+    static getSpawns():Array {
         if (!spawns) {
             spawns = JSON.parse((fs.readFileSync(Constants.SPAWNS_JSON_PATH)));
         }
         return spawns;
     }
 
-    static getSpawnsWithElevation() {
+    /**
+     * Synchronously gets Spawnpoint data (with elevations added) from JSON
+     * @returns {Array} Spawnpoint data, with elevations added
+     */
+    static getSpawnsWithElevation():Array {
         if (!spawns) {
             spawns = JSON.parse((fs.readFileSync(Constants.SPAWNS_WITH_ELEVATIONS_JSON_PATH)));
         }
