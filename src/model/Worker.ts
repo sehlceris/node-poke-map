@@ -17,31 +17,38 @@ export interface LoginData {
     password:String;
 }
 
+/**
+ * A Worker is a single account, with a username. The worker moves throughout the world and executes scans for map data
+ */
 export default class Worker {
 
     id:number;
     username:String;
     password:String;
-    client:any;
+    client:any; //pogobuf API client
     consecutiveLoginFailures:number;
     consecutiveScanFailures:number;
-    isFreeBool:Boolean;
-    isLoggedInBool:Boolean;
+    isFreeBool:Boolean; //whether this worker is free to reserve for a scan
+    isLoggedInBool:Boolean; //whether this worker is logged in
     lastLoggedInTime:Date;
-    randomMaximumLoggedInTimeFuzzFactor:number;
-    isWaitingUntilReloginBool:Boolean;
-    isBannedBool:Boolean;
-    currentLat:number;
+    randomMaximumLoggedInTimeFuzzFactor:number; //ms; a random time to wait until logging this user out and logging back in
+    isWaitingUntilReloginBool:Boolean; //signals that this worker is "logged out" and is in the process of logging back in - it is unavailable for use
+    isBannedBool:Boolean; //flag, if true, this worker is regarded as banned and can't be used
+    currentLat:number; //current latitude that this worker is at
     currentLong:number;
     currentElev:number;
     lastTimeMoved:Date;
     lastTimeFreed:Date;
     lastTimeReserved:Date;
-    currentRandomExtraDelay:Number;
-    totalMetersMoved:Number;
+    currentRandomExtraDelay:Number; //random extra delay to wait until next map scan
+    totalMetersMoved:Number; //total meters moved while walking through the world
     totalMovements:Number;
     totalScans:Number;
 
+    /**
+     * Creates the worker
+     * @param {LoginData} params Username/password
+     */
     constructor(params:LoginData) {
         this.isFreeBool = true;
         this.isLoggedInBool = false;
@@ -60,6 +67,10 @@ export default class Worker {
         this.currentRandomExtraDelay = Utils.getRandomInt(0, Utils.timestepTransformDown(Config.randomWorkerDelayFuzzFactor));
     }
 
+    /**
+     * Ensures that the worker is logged in and ready to scan
+     * @returns {Promise} Promise that this user is logged in
+     */
     ensureLoggedIn():Promise {
 
         //If worker has been logged in for too long, relogin
@@ -92,6 +103,10 @@ export default class Worker {
         }
     }
 
+    /**
+     * Logs this worker out, creates a new pogobuf client, and logs the worker back in (needs to be done periodically)
+     * @returns {Promise} Promise that the worker is logged in
+     */
     refreshLogin():Promise {
         this.client = new pogobuf.Client();
         let ptc = new pogobuf.PTCLogin();
@@ -144,6 +159,11 @@ export default class Worker {
             });
     }
 
+    /**
+     * Moves a worker to a spawnpoint and scans it for map data
+     * @param {Spawnpoint} spawnpoint Spawnpoint to scan
+     * @returns {Promise} Scan result from Niantic API
+     */
     scan(spawnpoint:Spawnpoint):Promise {
         return this.ensureLoggedIn()
             .then(() => {
@@ -182,6 +202,9 @@ export default class Worker {
             })
     }
 
+    /**
+     * If a scan failed, do some stuff, if scan failures happen too often, assume the worker is banned
+     */
     handleScanFailure():void {
 
         this.consecutiveScanFailures++;
@@ -200,14 +223,25 @@ export default class Worker {
         }
     }
 
+    /**
+     * If scan is successful, reset the consecutive scan failure count
+     */
     handleScanSuccess():void {
         this.consecutiveScanFailures = 0;
     }
 
+    /**
+     * Returns true if this worker has been used for a scan before
+     * @returns {Boolean} true if this worker has been used for a scan before
+     */
     hasBeenUsedAtLeastOnceDuringProgramExecution():boolean {
         return (!!this.lastTimeReserved || !!this.lastTimeFreed || !!this.lastTimeMoved);
     }
 
+    /**
+     * Gets time since this worker has last been freed (i.e. time since worker became idle)
+     * @returns {Number}
+     */
     getTimeSinceLastFree():number {
         if (!this.lastTimeFreed) {
             return Infinity;
@@ -217,12 +251,22 @@ export default class Worker {
         }
     }
 
+    /**
+     * Niantic enforces a delay between map scans for each worker. Returns true if worker has waited long enough since its last scan
+     * @returns {boolean} true if worker has waited long enough since its last scan
+     */
     hasSatisfiedScanDelay():boolean {
         let satisfied = ((this.getTimeSinceLastFree() + this.currentRandomExtraDelay) > Config.workerScanDelayMs);
         log.debug(`worker ${this.id} has${satisfied ? "" : " not"} satisfied scan delay (has waited ${(this.getTimeSinceLastFree() + this.currentRandomExtraDelay)} out of ${Config.workerScanDelayMs + this.currentRandomExtraDelay})`);
         return satisfied;
     }
 
+    /**
+     * Moves the worker to the specified location, fuzzing its GPS coordinates a little bit
+     * @param lat
+     * @param long
+     * @param elev
+     */
     moveTo(lat:number, long:number, elev:number):void {
 
         if (this.currentLat && this.currentLong) {
@@ -259,11 +303,20 @@ export default class Worker {
         log.debug(`worker ${this.id} moved to ${this.currentLat}, ${this.currentLong} | ${this.currentElev}`);
     }
 
+    /**
+     * Calculates whether it is feasible that this worker has walked from its current position to the specified lat/long, based on its last idle time
+     * @param lat
+     * @param long
+     * @returns {boolean} true if worker could have feasibly moved to the specified lat/long, false if it would have been moving too quickly
+     */
     canMoveTo(lat, long):Boolean {
+
+        //if worker has never been moved before, then it can move anywhere
         if (!this.lastTimeMoved) {
             return true;
         }
 
+        //calculate distance between worker's current position and the specified coordinates
         let meters = geolib.getDistance(
             {
                 latitude: lat,
@@ -274,6 +327,7 @@ export default class Worker {
                 longitude: this.currentLong
             }, 1, 1);
 
+        //calculate the speed at which the worker would need to move to get to the specified coordinates
         let timeDiff = Utils.timestepTransformUp(new Date() - this.lastTimeMoved);
         let speed = meters / (timeDiff / 1000);
 
@@ -281,11 +335,14 @@ export default class Worker {
         let roundedSpeed = Math.round((speed * 10) / 10);
 
         log.debug(`worker ${this.id} would move from ${this.currentLat}, ${this.currentLong} to ${lat}, ${long}, a distance of ${meters}m over ${timeSeconds}s, a speed of ${roundedSpeed} m/s`);
+
         if (speed <= Config.workerMaximumMovementSpeedMetersPerSecond) {
+            //if the worker's required speed is lower than the cap, allow the move
             log.debug(`worker ${this.id} can move to ${lat}, ${long} because ${roundedSpeed}m/s <= ${Config.workerMaximumMovementSpeedMetersPerSecond}m/s`);
             return true;
         }
         else {
+            //if the speed required to make the worker move to the specified coordinates is too high, don't allow the worker to be moved
             log.debug(`worker ${this.id} is unable to move to ${lat}, ${long} because it would move at ${roundedSpeed} vs the maximum of ${Config.workerMaximumMovementSpeedMetersPerSecond}`);
             return false;
         }
@@ -295,12 +352,18 @@ export default class Worker {
         this.totalScans++;
     }
 
+    /**
+     * Reserves the worker, marking it unavailable for scans
+     */
     reserve():void {
         this.isFreeBool = false;
         this.lastTimeReserved = new Date();
         log.debug(`worker ${this.id} reserved`);
     }
 
+    /**
+     * Frees the worker, marking it available for scans
+     */
     free():void {
         this.isFreeBool = true;
         this.lastTimeFreed = new Date();
@@ -320,6 +383,10 @@ export default class Worker {
         return this.isWaitingUntilReloginBool;
     }
 
+    /**
+     * A worker is free if it is not reserved, not banned, and not re-logging in
+     * @returns {Boolean}
+     */
     isFree():boolean {
         return this.isFreeBool && !this.isBanned() && !this.isWaitingUntilRelogin();
     }

@@ -8,6 +8,9 @@ const log:any = Utils.getLogger('Pokemon');
 
 let pokedex = JSON.parse(fs.readFileSync(Constants.POKEDEX_JSON_PATH, 'utf8'));
 
+/**
+ * Represents a Pokemon
+ */
 export interface PokemonData {
     encounterId:String;
     number:Number;
@@ -21,6 +24,9 @@ export interface PokemonData {
     timeUntilHidden:Number;
 }
 
+/**
+ * A Pokemon
+ */
 export default class Pokemon {
 
     encounterId:String;
@@ -34,7 +40,7 @@ export default class Pokemon {
     lastModifiedTime:Number;
     timeUntilHidden:Number;
 
-    constructor(data:any) {
+    constructor(data:PokemonData) {
         this.encounterId = data.encounterId;
         this.spawnpointId = data.spawnpointId;
         this.disappearTime = data.disappearTime;
@@ -48,10 +54,19 @@ export default class Pokemon {
         this.name = Pokemon.getNameByPokedexNumber(this.number);
     }
 
+    /**
+     * Given a Pokedex number, returns the name of the Pokemon
+     * @param {Number} number Pokedex number
+     * @returns {String} name of Pokemon
+     */
     static getNameByPokedexNumber(number:number):String {
         return pokedex.find((x) => x.number === number).name;
     }
 
+    /**
+     * Turns this Pokemon instance into a regular serializable object
+     * @returns {PokemonData} Pokemon data
+     */
     toObject():PokemonData {
         return {
             encounterId: this.encounterId,
@@ -67,6 +82,10 @@ export default class Pokemon {
         }
     }
 
+    /**
+     * Generates a String representing this Pokemon
+     * @returns {string} String representation of this Pokemon
+     */
     toString():String {
         let str = `PKMN ${this.number} ${this.name} | eid=${this.encounterId} sid=${this.spawnpointId} | ${this.lat}, ${this.long} | dis=${this.disappearTime}`;
         return str;

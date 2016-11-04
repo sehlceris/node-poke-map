@@ -6,6 +6,9 @@ import Spawnpoint from "./Spawnpoint";
 
 const log:any = Utils.getLogger('Gym');
 
+/**
+ * Represents a Gym
+ */
 export interface GymData {
     id:String;
     last_modified_timestamp_ms:Number;

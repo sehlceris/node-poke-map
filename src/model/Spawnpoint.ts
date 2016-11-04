@@ -8,15 +8,18 @@ import Config from '../Config';
 
 const log:any = Utils.getLogger('Spawnpoint');
 
+/**
+ * A Spawnpoint becomes active (spawns a Pokemon) once per hour
+ */
 export default class Spawnpoint {
     id:String;
     lat:number;
     long:number;
     elev:number;
-    cell:number;
-    time:number;
-    spawnListener:Function;
-    driftlessInterval:DriftlessInterval;
+    cell:number; //google maps cell
+    time:number; //seconds; time of each hour that the spawnpoint becomes active
+    spawnListener:Function; //callback to fire when the spawnpoint becomes active
+    driftlessInterval:DriftlessInterval; //interval that is not susceptible to time drift
     timerStartTimeout:Number;
 
     constructor(params) {
@@ -28,14 +31,18 @@ export default class Spawnpoint {
         this.time = params.time;
     }
 
+    /**
+     * Calculates when this spawn should fire and begins the interval timer
+     */
     startSpawnTimer():void {
 
         this.stopSpawnTimer();
 
+        //calculate the time in this hour that this spawnpoint will fire
         let startTime = moment(new Date()).startOf('hour').add(this.time, 'seconds');
         let firstFireDelay = startTime - new Date(); //timeout for when the first spawn will be fired and the hour timer started
 
-        //If the spawn is in the past...
+        //if the spawn is in the past...
         if (firstFireDelay <= 0) {
 
             //If the spawn occurred less than N minutes ago, fire the spawn immediately...
@@ -61,6 +68,9 @@ export default class Spawnpoint {
         }, Utils.timestepTransformDown(firstFireDelay));
     }
 
+    /**
+     * Stops the interval timer, this spawnpoint will no longer emit spawn events
+     */
     stopSpawnTimer():void {
         if (this.timerStartTimeout) {
             clearTimeout(this.timerStartTimeout);
@@ -71,6 +81,9 @@ export default class Spawnpoint {
         }
     }
 
+    /**
+     * Signals to the callback function that this spawnpoint has become active
+     */
     fireSpawn():void {
         if (typeof(this.spawnListener) === 'function') {
             try {
@@ -82,6 +95,10 @@ export default class Spawnpoint {
         }
     }
 
+    /**
+     * Sets the callback to execute when this spawnpoint becomes active
+     * @param {Function} listener callback to execute when this spawnpoint becomes active
+     */
     setSpawnListener(listener:Function):void {
         this.spawnListener = listener;
     }
